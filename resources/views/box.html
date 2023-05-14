@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Chat Form</title>
+    <style>
+        .card {
+            height: 500px;
+            overflow-y: auto;
+        }
+
+        .form-control {
+            margin-bottom: 10px;
+        }
+
+        .chat-message {
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .user-message {
+            background-color: #d1ecf1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-body">
+                <div id="chat-area"></div>
+            </div>
+        </div>
+        <form id="chat-form">
+            <div class="card mt-4">
+                <div class="card-body">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="message-input" placeholder="Type your message...">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('chat-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var messageInput = document.getElementById('message-input');
+            var message = messageInput.value;
+            if (message.trim() !== '') {
+                addMessage(message, 'user-message');
+                // Send the message to the server or process it here
+                // ...
+
+                // Clear the input field
+                messageInput.value = '';
+            }
+        });
+
+        function addMessage(message, className) {
+            var chatArea = document.getElementById('chat-area');
+            var messageElement = document.createElement('div');
+            messageElement.className = 'chat-message ' + className;
+            messageElement.innerHTML = message;
+            chatArea.appendChild(messageElement);
+
+            // Scroll to the bottom of the chat area
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+    </script>
+</body>
+
+</html>
