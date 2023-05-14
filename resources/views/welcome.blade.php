@@ -1,136 +1,131 @@
-<style>
-    .floatingButtonWrap {
-        display: block;
-        position: fixed;
-        bottom: 45px;
-        right: 45px;
-        z-index: 999999999;
-    }
+<!DOCTYPE html>
+<html lang="en">
 
-    .floatingButtonInner {
-        position: absolute;
-    }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ asset('assets/bootstrap.min.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
+</head>
 
-    .floatingButton {
-        display: block;
-        width: 60px;
-        height: 60px;
-        text-align: center;
-        background: -webkit-linear-gradient(45deg, #8769a9, #507cb3);
-        background: -o-linear-gradient(45deg, #8769a9, #507cb3);
-        background: linear-gradient(45deg, #8769a9, #507cb3);
-        color: #fff;
-        line-height: 50px;
-        position: absolute;
-        border-radius: 50% 50%;
-        bottom: 0px;
-        right: 0px;
-        border: 5px solid #b2bedc;
-        /* opacity: 0.3; */
-        opacity: 1;
-        transition: all 0.4s;
-    }
+<body>
+    <div class="container">
+        <div class="row mb-3 mx-auto">
+            <div class="col-md-12">
+                <h4 class="text-center my-3" style="font-family: 'Courgette', cursive; font-weight: bold;">
+                    Welcome To <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">Soft Host IT</a>
+                </h4>
+            </div>
+            <div class="col-md-12">
+                <label for="name" class="text-md-end">{{ __('Name') }}</label>
+                <input id="name" type="name" class="form-control mb-3" name="name" value="{{ old('name') }}" required placeholder="Name">
+                <span class="text-danger small" id="name_Error"></span>
+            </div>
 
-    .floatingButton .fa {
-        font-size: 15px !important;
-    }
+            <div class="col-md-12">
+                <label for="email" class="text-md-end">{{ __('Email Address') }}</label>
+                <input id="email" type="email" class="form-control mb-3" name="email" value="{{ old('email') }}" required placeholder="Email address">
+                <span class="text-danger small" id="email_Error"></span>
+            </div>
 
-    .floatingButton.open,
-    .floatingButton:hover,
-    .floatingButton:focus,
-    .floatingButton:active {
-        opacity: 1;
-        color: #fff;
-    }
+            <div class="col-md-12">
+                <label for="message" class="text-md-end">{{ __('Message') }}</label>
+                <textarea id="message" class="form-control mb-3" name="message" required placeholder="Message"></textarea>
+                <span class="text-danger small" id="message_Error"></span>
+                <button type="submit" class="btn btn-primary w-100 mt-3" onclick="initial();">{{ __('Submit') }}</button>
+            </div>
 
-
-    .floatingButton .fa {
-        transform: rotate(0deg);
-        transition: all 0.4s;
-    }
-
-    .floatingButton.open .fa {
-        transform: rotate(270deg);
-    }
-
-    .floatingChatBox {
-        position: absolute;
-        bottom: 60px;
-        right: 30px;
-        width: 400px;
-        height: 50vh;
-        display: none;
-        background-color: white;
-        border-radius: 10px;
-        border: 1px solid #d5d5d5;
-        padding: 10px;
-    }
-
-    /* width */
-    ::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    /* Track */
-    ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 10px;
-    }
-
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-</style>
-<div class="floatingButtonWrap">
-    <div class="floatingButtonInner">
-        <a href="#" class="floatingButton">
-            <i class="fas fa-comments icon-default"></i>
-        </a>
-        <div class="floatingChatBox">
-            Chat with
-            {{-- {!! file_get_contents('http://chat-it.test/login') !!} --}}
         </div>
     </div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('.floatingButton').on('click',
-            function(e) {
-                e.preventDefault();
-                $(this).toggleClass('open');
-                if ($(this).children('.fa').hasClass('fa-comments')) {
-                    $(this).children('.fa').removeClass('fa-comments');
-                    $(this).children('.fa').addClass('fa-close');
-                } else if ($(this).children('.fa').hasClass('fa-close')) {
-                    $(this).children('.fa').removeClass('fa-close');
-                    $(this).children('.fa').addClass('fa-comments');
-                }
-                $('.floatingChatBox').stop().slideToggle();
-            }
-        );
-        $(this).on('click', function(e) {
+</body>
 
-            var container = $(".floatingButton");
-            // if the target of the click isn't the container nor a descendant of the container
-            if (container.is(e.target)) {
-                if (container.hasClass('open')) {
-                    container.removeClass('open');
-                }
-                if (container.children('.fa').hasClass('fa-close')) {
-                    container.children('.fa').removeClass('fa-close');
-                    container.children('.fa').addClass('fa-comments');
-                }
-                $('.floatingChatBox').hide();
-            }
-        });
+</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ajax setup
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="carf-token"]').attr('content')
+        }
     });
+    // ajax setup
+
+    // add data using ajax
+    function initial() {
+        var name = $('#name').val();
+        var email = $('#email').val();
+        var message = $('#message').val();
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            data: {
+                name: name,
+                email: email,
+                message: message,
+                _token: $('meta[name="csrf-token"]').attr('content'),
+            },
+            url: "{{ route('login.or.create') }}",
+            success: function(group) {
+                // $('#paymentMethodTable').DataTable().ajax.reload();
+                // Swal.fire({
+                //     toast: true,
+                //     position: 'top-end',
+                //     icon: 'success',
+                //     title: 'Bank added successfully!',
+                //     showConfirmButton: false,
+                //     timer: 1500
+                // });
+            },
+            error: function(error) {
+                var $errors = error.responseJSON.errors;
+                if ($errors.name) {
+                    $('#name_Error').text($errors.name);
+                    $('#name').addClass('border-danger');
+                    toastr.error($errors.name);
+                }
+                if ($errors.email) {
+                    $('#email_Error').text($errors.email);
+                    $('#email').addClass('border-danger');
+                    toastr.error($errors.email);
+                }
+                if ($errors.message) {
+                    $('#message_Error').text($errors.message);
+                    $('#message').addClass('border-danger');
+                    toastr.error($errors.message);
+                }
+            }
+        })
+    }
+    // add data using ajax
+
+    // fetching all data using ajax
+    // function getAllMessages() {
+    //     $.ajax({
+    //         type: "GET",
+    //         dataType: "JSON",
+    //         url: "",
+    //         success: function(roles) {
+    //             var data = "";
+    //             $.each(roles, function(key, value) {
+    //                 data = data + "<tr>"
+    //                 data = data + "<td class='align-middle text-capitalize py-0'>" + ++key + "</td>"
+    //                 data = data + "<td class='align-middle text-capitalize py-0'>" + value.name + "</td>"
+    //                 data = data + "<td class='align-middle text-capitalize py-0 text-center'>"
+    //                 data = data + "<button class='btn btn-sm btn-light me-1 pe-1' onclick='edit(" + value.id + ")'><i class='bx bx-pen'></i></button>"
+    //                 data = data + "<button class='btn btn-sm btn-light pe-1' onclick='destroy(" + value.id + ")'><i class='bx bx-trash'></i></button>"
+    //                 data = data + "</td>"
+    //                 data = data + "</tr>"
+    //             })
+    //             $('tbody').html(data);
+    //         }
+    //     });
+    // }
+    // getAllMessages();
+    // fetching all data using ajax
 </script>

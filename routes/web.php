@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/get-chat-box', function () {
+    return view('chatbox');
+});
+
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::post('login-or-create', [AjaxController::class, 'loginOrAccount'])->name('login.or.create');
