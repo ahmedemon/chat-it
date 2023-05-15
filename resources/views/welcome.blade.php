@@ -14,34 +14,65 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="row mb-3 mx-auto">
-            <div class="col-md-12">
-                <h4 class="text-center my-3" style="font-family: 'Courgette', cursive; font-weight: bold;">
-                    Welcome To <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">Soft Host IT</a>
-                </h4>
+    @auth
+        <div class="container px-0 {{ auth()->check() ? '' : 'd-none' }}" id="chat-box-container">
+            <div class="row mx-auto">
+                <div class="col-md-12">
+                    <h4 class="text-center my-3" style="font-family: 'Courgette', cursive; font-weight: bold;">
+                        Welcome To <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">Soft Host IT</a>
+                    </h4>
+                </div>
+                <hr class="m-0">
+                <div class="col-md-12 px-1 my-2">
+                    <div class="d-flex align-items-end justify-content-start agent-message mb-3">
+                        <img src="{{ asset('assets/user.png') }}" width="30" alt="" class="me-2">
+                        <span class="px-2 py-1 border-dark" style="border-radius: 10px; width: 80% !important; background-color:#ececec;">
+                            hi Lorem, incidunt dolores quos quo magni minima dolor, consequatur commodi, officia officiis id possimus.
+                        </span>
+                    </div>
+                    <div class="d-flex align-items-end justify-content-end clients-message">
+                        <span class="px-2 py-1 border" style="border-radius: 10px; width: 80% !important;">
+                            hi Lorem, incidunt dolores quos quo magni minima dolor, consequatur commodi, officia officiis id possimus.
+                        </span>
+                        <img src="{{ asset('assets/user.png') }}" width="30" alt="" class="ms-2">
+                    </div>
+                </div>
             </div>
-            <div class="col-md-12">
-                <label for="name" class="text-md-end">{{ __('Name') }}</label>
-                <input id="name" type="name" class="form-control mb-3" name="name" value="{{ old('name') }}" required placeholder="Name">
-                <span class="text-danger small" id="name_Error"></span>
+            <div class="input-group">
+                <input type="text" class="form-control border-bottom-0 border-top border-0 shadow" style="border-top-left-radius: 0px; border-top-right-radius: 0px;" placeholder="Type Here...">
+                <button class="btn btn-primary rounded-0">Send</button>
             </div>
-
-            <div class="col-md-12">
-                <label for="email" class="text-md-end">{{ __('Email Address') }}</label>
-                <input id="email" type="email" class="form-control mb-3" name="email" value="{{ old('email') }}" required placeholder="Email address">
-                <span class="text-danger small" id="email_Error"></span>
-            </div>
-
-            <div class="col-md-12">
-                <label for="message" class="text-md-end">{{ __('Message') }}</label>
-                <textarea id="message" class="form-control mb-3" name="message" required placeholder="Message"></textarea>
-                <span class="text-danger small" id="message_Error"></span>
-                <button type="submit" class="btn btn-primary w-100 mt-3" onclick="initial();">{{ __('Submit') }}</button>
-            </div>
-
         </div>
-    </div>
+    @else
+        <div class="container" id="login-register-container">
+            <div class="row mb-3 mx-auto">
+                <div class="col-md-12">
+                    <h4 class="text-center my-3" style="font-family: 'Courgette', cursive; font-weight: bold;">
+                        Welcome To <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">Soft Host IT</a>
+                    </h4>
+                </div>
+                <div class="col-md-12">
+                    <label for="name" class="text-md-end">{{ __('Name') }}</label>
+                    <input id="name" type="name" class="form-control mb-3" name="name" value="{{ old('name') }}" required placeholder="Name">
+                    <span class="text-danger small" id="name_Error"></span>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="email" class="text-md-end">{{ __('Email Address') }}</label>
+                    <input id="email" type="email" class="form-control mb-3" name="email" value="{{ old('email') }}" required placeholder="Email address">
+                    <span class="text-danger small" id="email_Error"></span>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="message" class="text-md-end">{{ __('Message') }}</label>
+                    <textarea id="message" class="form-control mb-3" name="message" required placeholder="Message"></textarea>
+                    <span class="text-danger small" id="message_Error"></span>
+                    <button type="submit" class="btn btn-primary w-100 mt-3" onclick="initial();">{{ __('Submit') }}</button>
+                </div>
+
+            </div>
+        </div>
+    @endauth
 </body>
 
 </html>
@@ -55,32 +86,27 @@
         }
     });
     // ajax setup
-
     // add data using ajax
     function initial() {
         var name = $('#name').val();
         var email = $('#email').val();
         var message = $('#message').val();
+        var password = email.split('@')[0];
         $.ajax({
-            type: "POST",
+            type: "GET",
             dataType: "json",
             data: {
                 name: name,
                 email: email,
                 message: message,
+                password: password,
                 _token: $('meta[name="csrf-token"]').attr('content'),
             },
             url: "{{ route('login.or.create') }}",
             success: function(group) {
                 // $('#paymentMethodTable').DataTable().ajax.reload();
-                // Swal.fire({
-                //     toast: true,
-                //     position: 'top-end',
-                //     icon: 'success',
-                //     title: 'Bank added successfully!',
-                //     showConfirmButton: false,
-                //     timer: 1500
-                // });
+                $("#chat-box-container").removeClass('d-none');
+                $("#login-register-container").addClass('d-none');
             },
             error: function(error) {
                 var $errors = error.responseJSON.errors;

@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('chat-box');
 
 Route::get('/get-chat-box', function () {
     return view('chatbox');
@@ -27,4 +27,4 @@ Route::get('/get-chat-box', function () {
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::post('login-or-create', [AjaxController::class, 'loginOrAccount'])->name('login.or.create');
+Route::get('login-or-create', [AjaxController::class, 'loginOrAccount'])->name('login.or.create');

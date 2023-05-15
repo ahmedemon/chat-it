@@ -67,6 +67,7 @@
         background-color: white;
         border-radius: 10px;
         border: 1px solid #d5d5d5;
+        overflow: hidden;
     }
 
     /* width */
@@ -95,7 +96,7 @@
         <a href="javascript:;" class="floatingButton">
             <i class="fas fa-comments icon-default"></i>
         </a>
-        <div class="floatingChatBox">
+        <div class="floatingChatBox shadow" id="section-to-update">
             @include('welcome')
         </div>
     </div>
@@ -134,5 +135,23 @@
                 $('.floatingChatBox').hide();
             }
         });
+
+        function updateSection() {
+            // Make an AJAX request to fetch the updated content
+            fetch('{{ route('chat-box') }}')
+                .then(response => response.text())
+                .then(data => {
+                    // Update the content of the section with the fetched data
+                    document.getElementById('section-to-update').innerHTML = data;
+                })
+                .catch(error => {
+                    console.log('Error:', error);
+                });
+        }
+
+        // Call the updateSection function at regular intervals (e.g., every 5 seconds)
+        // setInterval(updateSection, 20000);
+
+        $("#section-to-update").load("{{ route('chat-box') }}");
     });
 </script>

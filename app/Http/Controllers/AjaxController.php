@@ -14,6 +14,7 @@ class AjaxController extends Controller
         $name = request()->name;
         $email = request()->email;
         $message = request()->message;
+        $password = request()->password;
         $user = User::where('email', $email)->count();
 
         $parts = explode('@', $email);
@@ -21,7 +22,7 @@ class AjaxController extends Controller
         $password;
 
         if ($user > 0) {
-            $credentials = request()->only('email', $password);
+            $credentials = [$email, $password];
             Auth::attempt($credentials);
             return redirect()->route('home');
         } else {
@@ -32,9 +33,9 @@ class AjaxController extends Controller
                 'password' => Hash::make($password),
                 'email_verified_at' => now()
             ]);
-            $credentials = [$user->email, $password];
+            $credentials = request()->only('email', 'password');
             Auth::attempt($credentials);
-            return redirect()->route('home');
+            return response()->json($user);
         }
     }
 }
