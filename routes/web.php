@@ -18,6 +18,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('chat-bot.web', function () {
+    return view('web');
 })->name('chat-box');
 
 Route::get('/get-chat-box', function () {

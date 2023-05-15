@@ -91,22 +91,25 @@
         background: #555;
     }
 </style>
-<div class="floatingButtonWrap">
+
+{{-- for chat bot --}}
+{{-- <div class="floatingButtonWrap">
     <div class="floatingButtonInner">
-        <a href="javascript:;" class="floatingButton">
+        <a href="javascript:;" class="floatingButton1">
             <i class="fas fa-comments icon-default"></i>
         </a>
         <div class="floatingChatBox shadow" id="section-to-update">
             @include('welcome')
         </div>
     </div>
-</div>
+</div> --}}
+{{-- for chat bot --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('.floatingButton').on('click',
+        $('.floatingButton1').on('click',
             function(e) {
                 e.preventDefault();
                 $(this).toggleClass('open');
@@ -122,7 +125,7 @@
         );
         $(this).on('click', function(e) {
 
-            var container = $(".floatingButton");
+            var container = $(".floatingButton1");
             // if the target of the click isn't the container nor a descendant of the container
             if (container.is(e.target)) {
                 if (container.hasClass('open')) {
@@ -150,7 +153,7 @@
         }
 
         // Call the updateSection function at regular intervals (e.g., every 5 seconds)
-        // setInterval(updateSection, 20000);
+        setInterval(updateSection, 10000);
 
         $("#section-to-update").load("{{ route('chat-box') }}");
     });

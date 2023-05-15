@@ -22,9 +22,10 @@ class AjaxController extends Controller
         $password;
 
         if ($user > 0) {
-            $credentials = [$email, $password];
-            Auth::attempt($credentials);
-            return redirect()->route('home');
+            $credentials = request()->only('email', 'password');
+            $auth = Auth::attempt($credentials);
+            $sight = 'login';
+            return response()->json([$user, $sight]);
         } else {
             $user = User::create([
                 'name' => $name,
@@ -35,7 +36,8 @@ class AjaxController extends Controller
             ]);
             $credentials = request()->only('email', 'password');
             Auth::attempt($credentials);
-            return response()->json($user);
+            $sight = 'register';
+            return response()->json([$user, $sight]);
         }
     }
 }

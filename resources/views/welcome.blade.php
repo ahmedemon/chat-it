@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Login</title>
+    <title>Chat It</title>
     <link rel="stylesheet" href="{{ asset('assets/bootstrap.min.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,15 +15,15 @@
 
 <body>
     @auth
-        <div class="container px-0 {{ auth()->check() ? '' : 'd-none' }}" id="chat-box-container">
+        <div class="container border px-0 {{ auth()->check() ? '' : 'd-none' }}" id="chat-box-container">
             <div class="row mx-auto">
                 <div class="col-md-12">
                     <h4 class="text-center my-3" style="font-family: 'Courgette', cursive; font-weight: bold;">
-                        Welcome To <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">Soft Host IT</a>
+                        Welcome To <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">Soft Host IT</a> <br> Live Helping Point
                     </h4>
                 </div>
                 <hr class="m-0">
-                <div class="col-md-12 px-1 my-2">
+                <div class="col-md-12 px-1 my-1" style="height: 80vh; overflow-y: scroll;">
                     <div class="d-flex align-items-end justify-content-start agent-message mb-3">
                         <img src="{{ asset('assets/user.png') }}" width="30" alt="" class="me-2">
                         <span class="px-2 py-1 border-dark" style="border-radius: 10px; width: 80% !important; background-color:#ececec;">
@@ -64,6 +64,7 @@
                 </div>
 
                 <div class="col-md-12">
+                    <input type="hidden" type="from_url" value="{{ $_SERVER['QUERY_STRING'] }}">
                     <label for="message" class="text-md-end">{{ __('Message') }}</label>
                     <textarea id="message" class="form-control mb-3" name="message" required placeholder="Message"></textarea>
                     <span class="text-danger small" id="message_Error"></span>
@@ -103,8 +104,13 @@
                 _token: $('meta[name="csrf-token"]').attr('content'),
             },
             url: "{{ route('login.or.create') }}",
-            success: function(group) {
+            success: function(success) {
                 // $('#paymentMethodTable').DataTable().ajax.reload();
+                if (success.sight = 'login') {
+                    location.reload();
+                } else {
+                    location.reload();
+                }
                 $("#chat-box-container").removeClass('d-none');
                 $("#login-register-container").addClass('d-none');
             },
