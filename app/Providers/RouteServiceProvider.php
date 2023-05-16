@@ -18,6 +18,8 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     public const HOME = '/home';
+    public const USER_HOME = '/user';
+    public const ADMIN_HOME = '/admin';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
@@ -28,13 +30,28 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
-        $this->routes(function () {
+        $user_home = env('USER_URL_PREFIX', static::USER_HOME);
+        $admin_home = env('ADMIN_URL_PREFIX', static::ADMIN_HOME);
+
+        $this->routes(function () use ($user_home, $admin_home) {
             Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
+
+            Route::middleware('web')
+                ->prefix($admin_home)
+                ->name('admin.')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/admin.php'));
+
+            Route::middleware('web')
+                ->prefix($user_home)
+                ->name('user.')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/user.php'));
         });
     }
 }

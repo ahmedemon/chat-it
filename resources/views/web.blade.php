@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body id="body">
     <div class="row justify-content-center mx-auto vh-100 align-items-center">
         <div class="col-md-4">
             @auth
@@ -25,8 +25,8 @@
                             </h4>
                         </div>
                         <hr class="m-0">
-                        <div class="col-md-12 px-1 my-1" style="height: 80vh; overflow-y: scroll;">
-                            <div class="d-flex align-items-end justify-content-start agent-message mb-3">
+                        <div class="col-md-12 px-1 my-3" style="height: 80vh; overflow-y: scroll;" id="message_box">
+                            {{-- <div class="d-flex align-items-end justify-content-start agent-message mb-3">
                                 <img src="{{ asset('assets/user.png') }}" width="30" alt="" class="me-2">
                                 <span class="px-2 py-1 border-dark" style="border-radius: 10px; width: 80% !important; background-color:#ececec;">
                                     hi Lorem, incidunt dolores quos quo magni minima dolor, consequatur commodi, officia officiis id possimus.
@@ -37,7 +37,7 @@
                                     hi Lorem, incidunt dolores quos quo magni minima dolor, consequatur commodi, officia officiis id possimus.
                                 </span>
                                 <img src="{{ asset('assets/user.png') }}" width="30" alt="" class="ms-2">
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="input-group">
@@ -46,7 +46,7 @@
                     </div>
                 </div>
             @else
-                <div class="container" id="login-register-container">
+                <div class="container border rounded-3" id="login-register-container">
                     <div class="row mb-3 mx-auto">
                         <div class="col-md-12">
                             <h4 class="text-center my-3" style="font-family: 'Courgette', cursive; font-weight: bold;">
@@ -66,7 +66,13 @@
                         </div>
 
                         <div class="col-md-12">
-                            <input type="hidden" type="from_url" value="{{ $_SERVER['QUERY_STRING'] }}">
+                            <label for="phone" class="text-md-end">{{ __('Phone') }}</label>
+                            <input id="phone" type="number" class="form-control mb-3" name="phone" value="{{ old('phone') }}" required placeholder="Phone Number">
+                            <span class="text-danger small" id="phone_Error"></span>
+                        </div>
+
+                        <div class="col-md-12">
+                            <input type="hidden" id="from_url" type="from_url" value="{{ $_SERVER['QUERY_STRING'] }}">
                             <label for="message" class="text-md-end">{{ __('Message') }}</label>
                             <textarea id="message" class="form-control mb-3" name="message" required placeholder="Message"></textarea>
                             <span class="text-danger small" id="message_Error"></span>
@@ -95,6 +101,8 @@
     // add data using ajax
     function initial() {
         var name = $('#name').val();
+        var phone = $('#phone').val();
+        var from_url = $('#from_url').val();
         var email = $('#email').val();
         var message = $('#message').val();
         var password = email.split('@')[0];
@@ -103,6 +111,8 @@
             dataType: "json",
             data: {
                 name: name,
+                phone: phone,
+                from_url: from_url,
                 email: email,
                 message: message,
                 password: password,
@@ -110,14 +120,9 @@
             },
             url: "{{ route('login.or.create') }}",
             success: function(success) {
-                // $('#paymentMethodTable').DataTable().ajax.reload();
-                if (success.sight = 'login') {
-                    location.reload();
-                } else {
-                    location.reload();
-                }
                 $("#chat-box-container").removeClass('d-none');
                 $("#login-register-container").addClass('d-none');
+                refreshSection();
             },
             error: function(error) {
                 var $errors = error.responseJSON.errors;
@@ -141,28 +146,64 @@
     }
     // add data using ajax
 
+    // refresh the section
+    function refreshSection() {
+        // Make an AJAX request to fetch the updated content
+        fetch('{{ route('chat-box') }}')
+            .then(response => response.text())
+            .then(data => {
+                // Update the content of the section with the fetched data
+                document.getElementById('body').innerHTML = data;
+            })
+            .catch(error => {
+                console.log('Error:', error);
+            });
+    }
+
+    // Call the refreshSection function at regular intervals (e.g., every 5 seconds)
+    // refresh the section
+
     // fetching all data using ajax
-    // function getAllMessages() {
-    //     $.ajax({
-    //         type: "GET",
-    //         dataType: "JSON",
-    //         url: "",
-    //         success: function(roles) {
-    //             var data = "";
-    //             $.each(roles, function(key, value) {
-    //                 data = data + "<tr>"
-    //                 data = data + "<td class='align-middle text-capitalize py-0'>" + ++key + "</td>"
-    //                 data = data + "<td class='align-middle text-capitalize py-0'>" + value.name + "</td>"
-    //                 data = data + "<td class='align-middle text-capitalize py-0 text-center'>"
-    //                 data = data + "<button class='btn btn-sm btn-light me-1 pe-1' onclick='edit(" + value.id + ")'><i class='bx bx-pen'></i></button>"
-    //                 data = data + "<button class='btn btn-sm btn-light pe-1' onclick='destroy(" + value.id + ")'><i class='bx bx-trash'></i></button>"
-    //                 data = data + "</td>"
-    //                 data = data + "</tr>"
-    //             })
-    //             $('tbody').html(data);
-    //         }
-    //     });
-    // }
-    // getAllMessages();
+    function getAllMessages() {
+        $.ajax({
+            type: "GET",
+            dataType: "JSON",
+            url: "{{ route('user.get.conversation') }}",
+            success: function(messages) {
+                var data = "";
+                $.each(messages, function(key, value) {
+                    if (messages[key].type == 'send') {
+                        data = data + "<div class='d-flex align-items-end justify-content-end clients-message mb-2'>"
+                        data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
+                        data = data + messages[key].content
+                        data = data + "</span>"
+                        data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2'>"
+                        data = data + "</div>"
+                    } else {
+                        data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
+                        data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='me-2'>"
+                        data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
+                        data = data + messages[key].content
+                        data = data + "</span>"
+                        data = data + "</div>"
+                    }
+                })
+
+                $('#message_box').html(data);
+                setTimeout(getAllMessages, 5000);
+            }
+        });
+    }
+    $(document).ready(function() {
+        getAllMessages();
+    });
     // fetching all data using ajax
+    // data = data + "<tr>"
+    // data = data + "<td class='align-middle text-capitalize py-0'>" + ++key + "</td>"
+    // data = data + "<td class='align-middle text-capitalize py-0'>" + value.name + "</td>"
+    // data = data + "<td class='align-middle text-capitalize py-0 text-center'>"
+    // data = data + "<button class='btn btn-sm btn-light me-1 pe-1' onclick='edit(" + value.id + ")'><i class='bx bx-pen'></i></button>"
+    // data = data + "<button class='btn btn-sm btn-light pe-1' onclick='destroy(" + value.id + ")'><i class='bx bx-trash'></i></button>"
+    // data = data + "</td>"
+    // data = data + "</tr>"
 </script>
