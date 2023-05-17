@@ -183,7 +183,7 @@
             dataType: "JSON",
             url: "{{ route('user.get.conversation') }}",
             success: function(messages) {
-                $("#conversation_id").val(messages[0].id);
+                $("#conversation_id").val(messages[0].conversation_id);
                 var data = "";
                 $.each(messages, function(key, value) {
                     data = data + "<div class='my-3'>"
