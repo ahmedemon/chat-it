@@ -20,7 +20,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('chat-bot.web', function () {
+Route::get('web', function () {
     return view('web');
 })->name('chat-box');
 

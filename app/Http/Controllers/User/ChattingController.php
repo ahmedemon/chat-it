@@ -12,7 +12,7 @@ class ChattingController extends Controller
 {
     public function sendMessage()
     {
-        $text = request()->message;
+        $text = request()->message_body;
         $auth = Auth::user();
         $conversation = Conversation::findOrFail(request()->conversation_id);
         $data = new Message();

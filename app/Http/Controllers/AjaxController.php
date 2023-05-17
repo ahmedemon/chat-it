@@ -14,6 +14,11 @@ class AjaxController extends Controller
 {
     public function loginOrAccount()
     {
+        $this->validate(request(), [
+            'name' => 'required',
+            'email' => ['required', 'email'],
+            'phone' => 'required',
+        ]);
         $name = request()->name;
         $phone = request()->phone;
         $email = request()->email;

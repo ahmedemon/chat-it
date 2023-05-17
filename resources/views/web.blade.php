@@ -25,16 +25,18 @@
                             </h4>
                         </div>
                         <hr class="m-0">
-                        <div class="col-md-12 px-1 my-0" style="height: 70vh; overflow-y: scroll;" id="message_box">
-                            <div class="d-flex justify-content-center align-items-center" style="height: 100%; width: 100%;">
-                                Welcome to the live support center of <a href="https://softhostit.com/" target="_blank" class="ms-1 text-decoration-none">Soft Host It</a>
+                        <div style="height: 70vh; overflow-y: scroll;" id="scroll_bottom">
+                            <div class="col-md-12 px-1 my-0" id="message_box">
+                                <div class="d-flex justify-content-center align-items-center" style="height: 100%; width: 100%;">
+                                    Welcome to the live support center of <a href="https://softhostit.com/" target="_blank" class="ms-1 text-decoration-none">Soft Host It</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="input-group">
                         <input type="hidden" id="conversation_id" name="conversation_id" value="">
-                        <input type="text" class="form-control border-bottom-0 border-top border-start border-end border-0 shadow" placeholder="Type Here...">
-                        <button class="btn btn-primary rounded-0">Send</button>
+                        <input type="text" name="message_body" id="message_body" class="form-control border-bottom-0 border-top border-start border-end border-0 shadow" placeholder="Type Here...">
+                        <button class="btn btn-primary rounded-0" id="sendBtn" onclick="sendMessage();">Send</button>
                     </div>
                 </div>
             @else
@@ -45,21 +47,21 @@
                                 Welcome To <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">Soft Host IT</a>
                             </h4>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-12 mb-2">
                             <label for="name" class="text-md-end">{{ __('Name') }}</label>
-                            <input id="name" type="name" class="form-control mb-3" name="name" value="{{ old('name') }}" required placeholder="Name">
+                            <input id="name" type="name" class="form-control" name="name" value="{{ old('name') }}" required placeholder="Name">
                             <span class="text-danger small" id="name_Error"></span>
                         </div>
 
-                        <div class="col-md-12">
+                        <div class="col-md-12 mb-2">
                             <label for="email" class="text-md-end">{{ __('Email Address') }}</label>
-                            <input id="email" type="email" class="form-control mb-3" name="email" value="{{ old('email') }}" required placeholder="Email address">
+                            <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required placeholder="Email address">
                             <span class="text-danger small" id="email_Error"></span>
                         </div>
 
-                        <div class="col-md-12">
+                        <div class="col-md-12 mb-2">
                             <label for="phone" class="text-md-end">{{ __('Phone') }}</label>
-                            <input id="phone" type="number" class="form-control mb-3" name="phone" value="{{ old('phone') }}" required placeholder="Phone Number">
+                            <input id="phone" type="number" class="form-control" name="phone" value="{{ old('phone') }}" required placeholder="Phone Number">
                             <span class="text-danger small" id="phone_Error"></span>
                         </div>
 
@@ -94,6 +96,31 @@
         var from_url = $('#from_url').val();
         var email = $('#email').val();
         var password = email.split('@')[0];
+        if (name.length == 0) {
+            $('#name').addClass('border-danger');
+            $('#name_Error').text('Name is required!');
+        }
+        if (email.length == 0) {
+            $('#email').addClass('border-danger');
+            $('#email_Error').text('Email is required!');
+        }
+        if (phone.length == 0) {
+            $('#phone').addClass('border-danger');
+            $('#phone_Error').text('Phone is required!');
+        }
+
+        $('#name').keyup(function(event) {
+            $('#name').removeClass('border-danger');
+            $('#name_Error').text('');
+        });
+        $('#email').keyup(function(event) {
+            $('#email').removeClass('border-danger');
+            $('#email_Error').text('');
+        });
+        $('#phone').keyup(function(event) {
+            $('#phone').removeClass('border-danger');
+            $('#phone_Error').text('');
+        });
         $.ajax({
             type: "GET",
             dataType: "json",
@@ -114,7 +141,6 @@
             },
             error: function(error) {
                 var $errors = error.responseJSON.errors;
-                console.log($errors.name);
                 if ($errors.name) {
                     $('#name_Error').text($errors.name);
                     $('#name').addClass('border-danger');
@@ -148,8 +174,6 @@
                 console.log('Error:', error);
             });
     }
-
-    // Call the refreshSection function at regular intervals (e.g., every 5 seconds)
     // refresh the section
 
     // fetching all data using ajax
@@ -183,19 +207,47 @@
 
                 $('#message_box').html(data);
                 setTimeout(getAllMessages, 5000);
+                scrollToBottom();
             }
         });
     }
+    // Function to scroll to the bottom of the container
+    function scrollToBottom() {
+        var chatContainer = $("#scroll_bottom");
+        chatContainer.scrollTop(chatContainer[0].scrollHeight);
+    }
+    // Scroll to the bottom whenever new content is added
+
     $(document).ready(function() {
         getAllMessages();
     });
     // fetching all data using ajax
-    // data = data + "<tr>"
-    // data = data + "<td class='align-middle text-capitalize py-0'>" + ++key + "</td>"
-    // data = data + "<td class='align-middle text-capitalize py-0'>" + value.name + "</td>"
-    // data = data + "<td class='align-middle text-capitalize py-0 text-center'>"
-    // data = data + "<button class='btn btn-sm btn-light me-1 pe-1' onclick='edit(" + value.id + ")'><i class='bx bx-pen'></i></button>"
-    // data = data + "<button class='btn btn-sm btn-light pe-1' onclick='destroy(" + value.id + ")'><i class='bx bx-trash'></i></button>"
-    // data = data + "</td>"
-    // data = data + "</tr>"
+
+    function clearField() {
+        $("#message_body").val('');
+    }
+    // sending data
+    function sendMessage() {
+        var conversation_id = $('#conversation_id').val();
+        var message_body = $('#message_body').val();
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            data: {
+                conversation_id: conversation_id,
+                message_body: message_body,
+                _token: $('meta[name="csrf-token"]').attr('content'),
+            },
+            url: "{{ route('user.send.message') }}",
+            success: function(success) {
+                getAllMessages();
+                clearField();
+                $("#sendBtn").addClass('shadow-none');
+            },
+            error: function(error) {
+                var $errors = error.responseJSON.errors;
+            }
+        })
+    }
+    // sending data
 </script>
