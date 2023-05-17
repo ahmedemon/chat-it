@@ -25,23 +25,15 @@
                             </h4>
                         </div>
                         <hr class="m-0">
-                        <div class="col-md-12 px-1 my-3" style="height: 80vh; overflow-y: scroll;" id="message_box">
-                            {{-- <div class="d-flex align-items-end justify-content-start agent-message mb-3">
-                                <img src="{{ asset('assets/user.png') }}" width="30" alt="" class="me-2">
-                                <span class="px-2 py-1 border-dark" style="border-radius: 10px; width: 80% !important; background-color:#ececec;">
-                                    hi Lorem, incidunt dolores quos quo magni minima dolor, consequatur commodi, officia officiis id possimus.
-                                </span>
+                        <div class="col-md-12 px-1 my-0" style="height: 70vh; overflow-y: scroll;" id="message_box">
+                            <div class="d-flex justify-content-center align-items-center" style="height: 100%; width: 100%;">
+                                Welcome to the live support center of <a href="https://softhostit.com/" target="_blank" class="ms-1 text-decoration-none">Soft Host It</a>
                             </div>
-                            <div class="d-flex align-items-end justify-content-end clients-message">
-                                <span class="px-2 py-1 border" style="border-radius: 10px; width: 80% !important;">
-                                    hi Lorem, incidunt dolores quos quo magni minima dolor, consequatur commodi, officia officiis id possimus.
-                                </span>
-                                <img src="{{ asset('assets/user.png') }}" width="30" alt="" class="ms-2">
-                            </div> --}}
                         </div>
                     </div>
                     <div class="input-group">
-                        <input type="text" class="form-control border-bottom-0 border-top border-0 shadow" style="border-top-left-radius: 0px; border-top-right-radius: 0px;" placeholder="Type Here...">
+                        <input type="hidden" id="conversation_id" name="conversation_id" value="">
+                        <input type="text" class="form-control border-bottom-0 border-top border-start border-end border-0 shadow" placeholder="Type Here...">
                         <button class="btn btn-primary rounded-0">Send</button>
                     </div>
                 </div>
@@ -72,10 +64,7 @@
                         </div>
 
                         <div class="col-md-12">
-                            <input type="hidden" id="from_url" type="from_url" value="{{ $_SERVER['QUERY_STRING'] }}">
-                            <label for="message" class="text-md-end">{{ __('Message') }}</label>
-                            <textarea id="message" class="form-control mb-3" name="message" required placeholder="Message"></textarea>
-                            <span class="text-danger small" id="message_Error"></span>
+                            <input type="hidden" id="from_url" type="from_url" value="{{ Crypt::encrypt($_SERVER['QUERY_STRING']) }}">
                             <button type="submit" class="btn btn-primary w-100 mt-3" onclick="initial();">{{ __('Submit') }}</button>
                         </div>
 
@@ -104,7 +93,6 @@
         var phone = $('#phone').val();
         var from_url = $('#from_url').val();
         var email = $('#email').val();
-        var message = $('#message').val();
         var password = email.split('@')[0];
         $.ajax({
             type: "GET",
@@ -114,7 +102,6 @@
                 phone: phone,
                 from_url: from_url,
                 email: email,
-                message: message,
                 password: password,
                 _token: $('meta[name="csrf-token"]').attr('content'),
             },
@@ -123,9 +110,11 @@
                 $("#chat-box-container").removeClass('d-none');
                 $("#login-register-container").addClass('d-none');
                 refreshSection();
+                getAllMessages();
             },
             error: function(error) {
                 var $errors = error.responseJSON.errors;
+                console.log($errors.name);
                 if ($errors.name) {
                     $('#name_Error').text($errors.name);
                     $('#name').addClass('border-danger');
@@ -136,10 +125,10 @@
                     $('#email').addClass('border-danger');
                     toastr.error($errors.email);
                 }
-                if ($errors.message) {
-                    $('#message_Error').text($errors.message);
-                    $('#message').addClass('border-danger');
-                    toastr.error($errors.message);
+                if ($errors.phone) {
+                    $('#phone_Error').text($errors.phone);
+                    $('#phone').addClass('border-danger');
+                    toastr.error($errors.phone);
                 }
             }
         })
@@ -170,8 +159,10 @@
             dataType: "JSON",
             url: "{{ route('user.get.conversation') }}",
             success: function(messages) {
+                $("#conversation_id").val(messages[0].id);
                 var data = "";
                 $.each(messages, function(key, value) {
+                    data = data + "<div class='my-3'>"
                     if (messages[key].type == 'send') {
                         data = data + "<div class='d-flex align-items-end justify-content-end clients-message mb-2'>"
                         data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
@@ -187,6 +178,7 @@
                         data = data + "</span>"
                         data = data + "</div>"
                     }
+                    data = data + "</div>"
                 })
 
                 $('#message_box').html(data);

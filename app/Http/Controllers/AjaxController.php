@@ -7,6 +7,7 @@ use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 
 class AjaxController extends Controller
@@ -16,7 +17,7 @@ class AjaxController extends Controller
         $name = request()->name;
         $phone = request()->phone;
         $email = request()->email;
-        $from_url = request()->from_url;
+        $from_url = Crypt::decrypt(request()->from_url);
         $message = request()->message;
         $password = request()->password;
         $user = User::where('email', $email)->count();
@@ -27,20 +28,6 @@ class AjaxController extends Controller
 
         if ($user > 0) {
             $credentials = request()->only('email', 'password');
-
-            $auth = Auth::user();
-            $conversation = new Conversation();
-            $conversation->user_id = $auth->id;
-            $conversation->name = $name;
-            $conversation->from_url = $from_url;
-            $conversation->save();
-
-            $message = new Message();
-            $message->user_id = $auth->id;
-            $message->conversation_id = $conversation->id;
-            $message->content = request()->message;
-            $message->save();
-
             Auth::attempt($credentials);
             return response()->json($user);
         } else {
@@ -54,6 +41,7 @@ class AjaxController extends Controller
                 'email_verified_at' => now()
             ]);
             $credentials = request()->only('email', 'password');
+            Auth::attempt($credentials);
 
             $auth = Auth::user();
             $conversation = new Conversation();
@@ -65,10 +53,10 @@ class AjaxController extends Controller
             $message = new Message();
             $message->user_id = $auth->id;
             $message->conversation_id = $conversation->id;
-            $message->content = request()->message;
+            $message->type = 'receive';
+            $message->content = 'Hi their! How can i assist you today?';
             $message->save();
 
-            Auth::attempt($credentials);
             return response()->json($user);
         }
     }
