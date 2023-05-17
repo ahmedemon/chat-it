@@ -25,7 +25,7 @@
                             </h4>
                         </div>
                         <hr class="m-0">
-                        <div style="height: 70vh; overflow-y: scroll;" id="scroll_bottom">
+                        <div style="height: 70vh; overflow-y: scroll; scroll-behavior: smooth;" id="scroll_bottom">
                             <div class="col-md-12 px-1 my-0" id="message_box">
                                 <div class="d-flex justify-content-center align-items-center" style="height: 100%; width: 100%;">
                                     Welcome to the live support center of <a href="https://softhostit.com/" target="_blank" class="ms-1 text-decoration-none">Soft Host It</a>
@@ -204,23 +204,22 @@
                     }
                     data = data + "</div>"
                 })
-
                 $('#message_box').html(data);
-                setTimeout(getAllMessages, 5000);
-                scrollToBottom();
+                setTimeout(getAllMessages, 1000);
             }
         });
     }
     // Function to scroll to the bottom of the container
-    function scrollToBottom() {
-        var chatContainer = $("#scroll_bottom");
-        chatContainer.scrollTop(chatContainer[0].scrollHeight);
-    }
-    // Scroll to the bottom whenever new content is added
-
     $(document).ready(function() {
+        setTimeout(function() {
+            var scrollDiv = $('#scroll_bottom');
+            scrollDiv.scrollTop(scrollDiv.prop('scrollHeight'));
+        }, 500); // Adjust the delay (in milliseconds) as needed
         getAllMessages();
     });
+
+    // Scroll to the bottom whenever new content is added
+
     // fetching all data using ajax
 
     function clearField() {
@@ -243,6 +242,10 @@
                 getAllMessages();
                 clearField();
                 $("#sendBtn").addClass('shadow-none');
+                setTimeout(function() {
+                    var scrollDiv = $('#scroll_bottom');
+                    scrollDiv.scrollTop(scrollDiv.prop('scrollHeight'));
+                }, 500); // Adjust the delay (in milliseconds) as needed
             },
             error: function(error) {
                 var $errors = error.responseJSON.errors;
