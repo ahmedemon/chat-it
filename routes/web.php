@@ -22,9 +22,9 @@ Route::get('/', function () {
 
 Route::get('web', function () {
     return view('web');
-})->name('chat-box');
+})->name('web');
 
-Route::get('/get-chat-box', function () {
+Route::get('/chat-box', function () {
     return view('chatbox');
 });
 
