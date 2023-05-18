@@ -122,7 +122,7 @@
         // refresh the section
         function refreshSection() {
             // Make an AJAX request to fetch the updated content
-            fetch('{{ route('chat-box') }}')
+            fetch('{{ route('web') }}')
                 .then(response => response.text())
                 .then(data => {
                     // Update the content of the section with the fetched data
