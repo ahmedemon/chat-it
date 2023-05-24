@@ -22,6 +22,10 @@ class ChattingController extends Controller
             'type' => 'send',
             'content' => $text,
         ]);
+
+        $conversation->status = 'receive';
+        $conversation->updated_at = now();
+        $conversation->save();
         return response()->json($data);
     }
 }

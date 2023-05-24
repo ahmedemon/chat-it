@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('name')->nullable();
             $table->string('from_url')->nullable();
+            $table->string('status')->default('receive');
             $table->timestamps();
         });
     }

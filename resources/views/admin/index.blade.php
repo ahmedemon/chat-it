@@ -10,10 +10,7 @@
                 </div>
                 <hr class="m-0">
                 <div class="col-3 px-0">
-                    <div class="border border-top-0 border-end-0 px-0" style="height: 100%">
-                        @foreach (config('conversations') as $conversation)
-                            <a href="javascript:;" onclick="viewConversation({{ $conversation->id }});" id="inbox{{ $conversation->id }}" class="p-2 btn btn-outline-dark {{ $loop->last ? 'border-bottom-1' : ' border-bottom-0' }} w-100 rounded-0">{{ $conversation->name ?? '' }}</a>
-                        @endforeach
+                    <div class="border border-top-0 border-end-0 px-0" style="height: 100%; overflow-y: scroll;" id="inboxes">
                     </div>
                 </div>
                 <div class="col-9 px-0">
@@ -28,6 +25,7 @@
                             </div>
                         </div>
                         <div class="input-group" id="input_box">
+                            <input type="hidden" id="total_message" name="total_message" value="">
                             <input type="hidden" id="conversation_id" name="conversation_id" value="">
                             <input type="text" name="message_body" id="message_body" class="form-control border-bottom-0 border-top border-start border-end border-0" placeholder="Type Here...">
                             <button class="btn btn-primary rounded-0" id="sendBtn" onclick="sendMessage();">Send</button>
@@ -40,6 +38,9 @@
 @endsection
 @push('js')
     <script>
+        setTimeout(function() {
+            location.reload();
+        }, 1000000);
         // ajax setup
         $.ajaxSetup({
             headers: {
@@ -119,14 +120,79 @@
         }
         // add data using ajax
 
+        // get inboxes
+        function getInboxes() {
+            fetch("{{ route('admin.get.inboxes') }}")
+                .then(response => response.json())
+                .then(inboxes => {
+                    var data = "";
+                    var lastKey = Object.keys(inboxes).sort().reverse()[0];
+                    $.each(inboxes, function(key, value) {
+                        if (lastKey == key) {
+                            var border = 'border-bottom-1';
+                        } else {
+                            var border = 'border-bottom-0';
+                        }
+                        if (value.status == 'seen') {
+                            var unseen = 'font-weight: normal;';
+                        } else {
+                            var unseen = 'font-weight: bold; background-color: darkgray;';
+                            var audio = new Audio('{{ asset('assets/sound/receive-admin.mp3') }}');
+                            audio.play();
+                        }
+                        var onclick = "onclick = 'viewConversation(" + value.id + ");'"; // inbox onclick attribute
+                        var id = "id='inbox" + value.id + "'"; // inbox id attribute
+                        var classes = "class='p-2 btn btn-outline-dark w-100 rounded-0 " + border + "'"; // inbox class attribute
+                        var style = "style='" + unseen + "'"; // inbox style attribute
+                        data = data + "<a href='javascript:;' " + onclick + id + classes + style + ">" + value.name + "</a>"
+                    })
+                    $('#inboxes').html(data);
+                })
+                .catch(error => {
+                    console.log('Error:', error);
+                });
+        }
+        getInboxes();
+        $(document).ready(function() {
+            setInterval(getInboxes, 3000);
+        });
+
+        // get inboxes
+
         // refresh the section
-        function refreshSection() {
-            // Make an AJAX request to fetch the updated content
-            fetch('{{ route('web') }}')
-                .then(response => response.text())
-                .then(data => {
-                    // Update the content of the section with the fetched data
-                    document.getElementById('body').innerHTML = data;
+        function fetchData(id) {
+            var data_id = id;
+            var url = "{{ route('admin.view.conversation', ':id') }}";
+            url = url.replace(':id', data_id);
+            fetch(url)
+                .then(response => response.json())
+                .then(messages => {
+                    var data = "";
+                    $.each(messages, function(key, value) {
+                        data = data + "<div class='my-3'>"
+                        if (value.type == 'send') {
+                            data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
+                            data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='me-2'>"
+                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
+                            data = data + value.content
+                            data = data + "</span>"
+                            data = data + "</div>"
+                        } else {
+                            data = data + "<div class='d-flex align-items-end justify-content-end clients-message mb-2'>"
+                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
+                            data = data + value.content
+                            data = data + "</span>"
+                            data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2'>"
+                            data = data + "</div>"
+                        }
+                        data = data + "</div>"
+                        $("#conversation_id").val(value.conversation_id);
+                    })
+                    $('#message_box').html(data);
+                    var current_total = messages.length;
+                    var total_message = $("#total_message").val();
+                    setTimeout(fetchData, 3000);
+                    $("#total_message").val(current_total);
                 })
                 .catch(error => {
                     console.log('Error:', error);
@@ -136,10 +202,6 @@
 
         // fetching all data using ajax
         function viewConversation(id) {
-            // $("#inbox" + id).on('click', function() {
-            //     $("#inbox" + id).addClass('active');
-            // });
-
             var data_id = id;
             var url = "{{ route('admin.view.conversation', ':id') }}";
             url = url.replace(':id', data_id);
@@ -148,35 +210,28 @@
                 dataType: "JSON",
                 url: url,
                 success: function(messages) {
-                    var conversation_id = $("#conversation_id").val(messages[0].conversation_id);
-                    var data = "";
-                    $.each(messages, function(key, value) {
-                        data = data + "<div class='my-3'>"
-                        if (messages[key].type == 'send') {
-                            data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
-                            data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='me-2'>"
-                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
-                            data = data + messages[key].content
-                            data = data + "</span>"
-                            data = data + "</div>"
-                        } else {
-                            data = data + "<div class='d-flex align-items-end justify-content-end clients-message mb-2'>"
-                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
-                            data = data + messages[key].content
-                            data = data + "</span>"
-                            data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2'>"
-                            data = data + "</div>"
-                        }
-                        data = data + "</div>"
-                    })
-                    $('#message_box').html(data);
-                    setTimeout(viewConversation.conversation_id, 1000);
+                    $("#total_message").val(messages.length);
+                    var conversation_id = $("#conversation_id").val(id);
+                    fetchData(data_id);
                 }
             });
             setTimeout(function() {
                 var scrollDiv = $('#scroll_bottom');
                 scrollDiv.scrollTop(scrollDiv.prop('scrollHeight'));
             }, 500);
+
+            var seenUrl = "{{ route('admin.seen', ':id') }}";
+            seenUrl = seenUrl.replace(':id', id);
+            $.ajax({
+                type: "GET",
+                dataType: "JSON",
+                url: seenUrl,
+                success: function(messages) {
+                    var conversation_id = $("#conversation_id").val(messages[0].conversation_id);
+                    $("#total_message").val(messages.length);
+                    // fetchData();
+                }
+            });
         }
         // Function to scroll to the bottom of the container
         $(document).ready(function() {
@@ -218,6 +273,9 @@
                         var scrollDiv = $('#scroll_bottom');
                         scrollDiv.scrollTop(scrollDiv.prop('scrollHeight'));
                     }, 500);
+
+                    var audio = new Audio('{{ asset('assets/sound/sent.mp3') }}');
+                    audio.play();
                 },
                 error: function(error) {
                     var $errors = error.responseJSON.errors;

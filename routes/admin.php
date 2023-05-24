@@ -21,4 +21,6 @@ Route::middleware('admin')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::get('/view-conversation/{id}', [DashboardController::class, 'viewConversation'])->name('view.conversation');
     Route::post('/send-message/{id}', [DashboardController::class, 'sendMessage'])->name('send.message');
+    Route::get('inboxes', [DashboardController::class, 'getInboxes'])->name('get.inboxes');
+    Route::get('seen/{id}', [DashboardController::class, 'seen'])->name('seen');
 });

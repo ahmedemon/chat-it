@@ -44,4 +44,21 @@ class DashboardController extends Controller
         ]);
         return response()->json($data);
     }
+
+    public function getInboxes()
+    {
+        $data = Conversation::with('messages')->orderBy('updated_at', 'desc')->get();
+        return response()->json($data);
+    }
+
+    public function seen($id)
+    {
+        $data = Message::where('conversation_id', $id)->update(['status' => 'seen']);
+
+        $data1 = Conversation::findOrFail($id);
+        $data1->status = 'seen';
+        $data1->save();
+
+        return response()->json([$data, $data1]);
+    }
 }

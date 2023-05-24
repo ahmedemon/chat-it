@@ -35,6 +35,7 @@
                     </div>
                     <div class="input-group">
                         <input type="hidden" id="conversation_id" name="conversation_id" value="">
+                        <input type="hidden" id="total_message" name="total_message" value="">
                         <input type="text" name="message_body" id="message_body" class="form-control border-bottom-0 border-top border-start border-end border-0 shadow" placeholder="Type Here...">
                         <button class="btn btn-primary rounded-0" id="sendBtn" onclick="sendMessage();">Send</button>
                     </div>
@@ -82,6 +83,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    setTimeout(function() {
+        location.reload();
+    }, 1000000);
     // ajax setup
     $.ajaxSetup({
         headers: {
@@ -186,6 +190,7 @@
                 $("#conversation_id").val(messages[0].conversation_id);
                 var data = "";
                 $.each(messages, function(key, value) {
+                    $("#total_message").val(messages.length);
                     data = data + "<div class='my-3'>"
                     if (messages[key].type == 'send') {
                         data = data + "<div class='d-flex align-items-end justify-content-end clients-message mb-2'>"
@@ -246,6 +251,9 @@
                     var scrollDiv = $('#scroll_bottom');
                     scrollDiv.scrollTop(scrollDiv.prop('scrollHeight'));
                 }, 500); // Adjust the delay (in milliseconds) as needed
+
+                var audio = new Audio('{{ asset('assets/sound/sent.mp3') }}');
+                audio.play();
             },
             error: function(error) {
                 var $errors = error.responseJSON.errors;
