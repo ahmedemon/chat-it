@@ -11,10 +11,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
+    @stack('css')
 </head>
 
-<body id="body">
-    @yield('content')
+<body id="body" style="background-color: #111b21;">
+    <div class="row justify-content-center mx-auto">
+        <div class="col-md-10">
+            @yield('content')
+        </div>
+    </div>
 </body>
 
 </html>

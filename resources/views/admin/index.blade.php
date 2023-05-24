@@ -1,22 +1,25 @@
 @extends('layouts.admin.app', ['pageTitle' => $pageTitle])
 @section('content')
     <div class="row justify-content-center mx-auto vh-100 align-items-center">
-        <div class="col-md-5 col-12">
-            <div class="row">
-                <div class="col-md-12 border border-bottom-0">
-                    <h4 class="text-center my-3" style="font-family: 'Courgette', cursive; font-weight: bold;">
-                        Welcome To <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">Soft Host IT</a> <br> Live Helping Point
-                    </h4>
-                </div>
+        <div class="col-12">
+            <div class="row bg-white">
                 <hr class="m-0">
                 <div class="col-3 px-0">
-                    <div class="border border-top-0 border-end-0 px-0" style="height: 100%; overflow-y: scroll;" id="inboxes">
+                    <div class="border-bottom d-flex align-items-center" style="height: 10vh;">
+                        <img src="{{ asset('user/img/user.png') }}" height="40" class="ms-2" alt="">
+                    </div>
+                    <div class="border border-top-0 border-end-0 px-0" style="height: 80vh; overflow-y: scroll;" id="inboxes">
                     </div>
                 </div>
                 <div class="col-9 px-0">
+                    <div class="border-bottom d-flex justify-content-center align-items-center" style="height: 10vh;">
+                        <h4 class="text-center my-0" style="font-family: 'Courgette', cursive; font-weight: bold;">
+                            Welcome To <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">Soft Host IT</a> <br> Live Helping Point
+                        </h4>
+                    </div>
                     <div class="border border-top-0 px-0" id="chat-box-container">
                         <div class="row mx-auto">
-                            <div style="height: 70vh; overflow-y: scroll; scroll-behavior: smooth;" id="scroll_bottom">
+                            <div style="height: 80vh; overflow-y: scroll; scroll-behavior: smooth;" id="scroll_bottom">
                                 <div class="col-md-12 px-1 my-0" id="message_box">
                                     <div class="d-flex justify-content-center align-items-center" style="height: 100%; width: 100%;">
                                         Welcome to the live support center of <a href="https://softhostit.com/" target="_blank" class="ms-1 text-decoration-none">Soft Host It</a>
