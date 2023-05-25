@@ -1,37 +1,66 @@
 @extends('layouts.admin.app', ['pageTitle' => $pageTitle])
+<style>
+    /* width */
+    ::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+</style>
 @section('content')
     <div class="row justify-content-center mx-auto vh-100 align-items-center">
         <div class="col-12">
             <div class="row bg-white">
                 <hr class="m-0">
-                <div class="col-3 px-0">
-                    <div class="border-bottom d-flex align-items-center" style="height: 10vh;">
+                <div class="col-3 px-0 border-end">
+                    <div class="border-bottom d-flex align-items-center" style="height: 7vh;">
                         <img src="{{ asset('user/img/user.png') }}" height="40" class="ms-2" alt="">
                     </div>
-                    <div class="border border-top-0 border-end-0 px-0" style="height: 80vh; overflow-y: scroll;" id="inboxes">
+                    <div class="border-start px-0" style="height: 90vh; overflow-y: scroll;" id="inboxes">
                     </div>
                 </div>
-                <div class="col-9 px-0">
-                    <div class="border-bottom d-flex justify-content-center align-items-center" style="height: 10vh;">
+                <div class="col-9 px-0 d-none" id="header-right">
+                    <div class="border-bottom d-flex justify-content-center align-items-center" style="height: 7vh;">
                         <h4 class="text-center my-0" style="font-family: 'Courgette', cursive; font-weight: bold;">
-                            Welcome To <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">Soft Host IT</a> <br> Live Helping Point
+                            Welcome To <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">Soft Host IT</a> Live Helping Point
                         </h4>
                     </div>
-                    <div class="border border-top-0 px-0" id="chat-box-container">
+                    <div class="border-end px-0" id="chat-box-container">
                         <div class="row mx-auto">
-                            <div style="height: 80vh; overflow-y: scroll; scroll-behavior: smooth;" id="scroll_bottom">
-                                <div class="col-md-12 px-1 my-0" id="message_box">
-                                    <div class="d-flex justify-content-center align-items-center" style="height: 100%; width: 100%;">
-                                        Welcome to the live support center of <a href="https://softhostit.com/" target="_blank" class="ms-1 text-decoration-none">Soft Host It</a>
-                                    </div>
+                            <div class="px-0" style="height: 90vh; overflow-y: scroll; scroll-behavior: smooth;" id="scroll_bottom">
+                                <div class="col-md-12 px-3 my-0" id="message_box">
+                                </div>
+                                <div class="input-group p-3 sticky-bottom bg-white shadow" id="input_box">
+                                    <input type="hidden" id="total_message" name="total_message" value="">
+                                    <input type="hidden" id="conversation_id" name="conversation_id" value="">
+                                    <input type="text" name="message_body" id="message_body" class="form-control shadow-none border" placeholder="Type Here...">
+                                    <button class="btn btn-primary rounded-0" id="sendBtn" onclick="sendMessage();">Send</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="input-group" id="input_box">
-                            <input type="hidden" id="total_message" name="total_message" value="">
-                            <input type="hidden" id="conversation_id" name="conversation_id" value="">
-                            <input type="text" name="message_body" id="message_body" class="form-control border-bottom-0 border-top border-start border-end border-0" placeholder="Type Here...">
-                            <button class="btn btn-primary rounded-0" id="sendBtn" onclick="sendMessage();">Send</button>
+                    </div>
+                </div>
+                <div class="col-9 px-0" id="grettings-page">
+                    <div>
+                        <div class="px-0" id="chat-box-container">
+                            <div class="row mx-auto">
+                                <div class="d-flex justify-content-center align-items-center" style="height: 97vh;">
+                                    Welcome to the live support center of <a href="https://softhostit.com/" target="_blank" class="ms-1 text-decoration-none">Soft Host It</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -41,6 +70,18 @@
 @endsection
 @push('js')
     <script>
+        // enter key to send
+        $(document).ready(function() {
+            $('#message_body').keydown(function(event) {
+                if (event.keyCode === 13) { // Check if Enter key is pressed
+                    event.preventDefault(); // Prevent default behavior
+                    $("#sendBtn").click();
+                }
+            });
+        });
+        // enter key to send
+
+
         setTimeout(function() {
             location.reload();
         }, 1000000);
@@ -176,15 +217,19 @@
                         if (value.type == 'send') {
                             data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
                             data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='me-2'>"
-                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
+                            data = data + "<div class='d-flex w-75'>"
+                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
                             data = data + value.content
                             data = data + "</span>"
                             data = data + "</div>"
+                            data = data + "</div>"
                         } else {
                             data = data + "<div class='d-flex align-items-end justify-content-end clients-message mb-2'>"
-                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
+                            data = data + "<div class='d-flex w-75 justify-content-end'>"
+                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
                             data = data + value.content
                             data = data + "</span>"
+                            data = data + "</div>"
                             data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2'>"
                             data = data + "</div>"
                         }
@@ -214,6 +259,8 @@
                 url: url,
                 success: function(messages) {
                     $("#total_message").val(messages.length);
+                    $("#header-right").removeClass('d-none');
+                    $("#grettings-page").addClass('d-none');
                     var conversation_id = $("#conversation_id").val(id);
                     fetchData(data_id);
                 }

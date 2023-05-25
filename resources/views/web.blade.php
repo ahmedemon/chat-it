@@ -83,6 +83,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // enter key to send
+    $(document).ready(function() {
+        $('#message_body').keydown(function(event) {
+            if (event.keyCode === 13) { // Check if Enter key is pressed
+                event.preventDefault(); // Prevent default behavior
+                $("#sendBtn").click();
+            }
+        });
+    });
+    // enter key to send
+
     setTimeout(function() {
         location.reload();
     }, 1000000);
