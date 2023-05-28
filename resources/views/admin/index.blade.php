@@ -81,6 +81,18 @@
         });
         // enter key to send
 
+        $(document).keyup(function(e) {
+            if (e.key === "Escape") { // escape key maps to keycode `27`
+                fetch('http://chat-it.test/admin')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('body').innerHTML = data;
+                        getInboxes();
+                    })
+                    .catch(error => console.log(error));
+            }
+        });
+
 
         setTimeout(function() {
             location.reload();
@@ -171,6 +183,8 @@
                 .then(inboxes => {
                     var data = "";
                     var lastKey = Object.keys(inboxes).sort().reverse()[0];
+                    var conversation_id = $("#conversation_id").val();
+
                     $.each(inboxes, function(key, value) {
                         if (lastKey == key) {
                             var border = 'border-bottom-1';
@@ -186,7 +200,12 @@
                         }
                         var onclick = "onclick = 'viewConversation(" + value.id + ");'"; // inbox onclick attribute
                         var id = "id='inbox" + value.id + "'"; // inbox id attribute
-                        var classes = "class='p-2 btn btn-outline-dark w-100 rounded-0 " + border + "'"; // inbox class attribute
+                        if (value.id == conversation_id) {
+                            var active = ' active';
+                        } else {
+                            var active = '';
+                        }
+                        var classes = "class='p-2 btn btn-outline-dark w-100 rounded-0 " + border + active + "'"; // inbox class attribute
                         var style = "style='" + unseen + "'"; // inbox style attribute
                         data = data + "<a href='javascript:;' " + onclick + id + classes + style + ">" + value.name + "</a>"
                     })
@@ -198,14 +217,14 @@
         }
         getInboxes();
         $(document).ready(function() {
-            setInterval(getInboxes, 3000);
+            setInterval(getInboxes, 5000);
         });
 
         // get inboxes
 
         // refresh the section
-        function fetchData(id) {
-            var data_id = id;
+        function fetchData() {
+            var data_id = $("#conversation_id").val();
             var url = "{{ route('admin.view.conversation', ':id') }}";
             url = url.replace(':id', data_id);
             fetch(url)
@@ -220,6 +239,8 @@
                             data = data + "<div class='d-flex w-75'>"
                             data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
                             data = data + value.content
+                            data = data + "<br>"
+                            data = data + "<small class='text-success' style='font-size: 10px;'>From: " + value.site + "</small>"
                             data = data + "</span>"
                             data = data + "</div>"
                             data = data + "</div>"
@@ -239,7 +260,6 @@
                     $('#message_box').html(data);
                     var current_total = messages.length;
                     var total_message = $("#total_message").val();
-                    setTimeout(fetchData, 3000);
                     $("#total_message").val(current_total);
                 })
                 .catch(error => {
@@ -247,6 +267,12 @@
                 });
         }
         // refresh the section
+        $(document).ready(function() {
+            fetchData();
+            setTimeout(() => {
+                fetchData();
+            }, 10000);
+        });
 
         // fetching all data using ajax
         function viewConversation(id) {
@@ -262,7 +288,7 @@
                     $("#header-right").removeClass('d-none');
                     $("#grettings-page").addClass('d-none');
                     var conversation_id = $("#conversation_id").val(id);
-                    fetchData(data_id);
+                    fetchData();
                 }
             });
             setTimeout(function() {
@@ -282,6 +308,11 @@
                     // fetchData();
                 }
             });
+            var conversation_id = $("#conversation_id").val();
+            if (conversation_id == !null) {
+                $("#inbox" + conversation_id).addClass('active');
+            }
+            getInboxes();
         }
         // Function to scroll to the bottom of the container
         $(document).ready(function() {

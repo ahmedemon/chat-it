@@ -33,6 +33,14 @@ class AjaxController extends Controller
 
         if ($user > 0) {
             $credentials = request()->only('email', 'password');
+
+            // updating the url
+            $user = User::where('email', $email)->first();
+            $conversation = Conversation::where('user_id', $user->id)->first();
+            $conversation->from_url = $from_url;
+            $conversation->save();
+            // updating the url
+
             Auth::attempt($credentials);
             return response()->json($user);
         } else {

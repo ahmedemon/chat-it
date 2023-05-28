@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('type')->default('send');
             $table->foreign('conversation_id')->references('id')->on('conversations')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('site')->nullable();
             $table->string('status')->default('sent');
             $table->timestamps();
         });

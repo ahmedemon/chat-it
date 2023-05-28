@@ -20,6 +20,7 @@ class ChattingController extends Controller
             'user_id' => $auth->id,
             'conversation_id' => $conversation->id,
             'type' => 'send',
+            'site' => $conversation->from_url,
             'content' => $text,
         ]);
 
