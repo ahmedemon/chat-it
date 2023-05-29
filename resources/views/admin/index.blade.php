@@ -55,7 +55,7 @@
                     <div class="border-bottom d-flex justify-content-between align-items-center" style="height: 6vh;">
                         <div>
                             <img src="{{ asset('user/img/user.png') }}" height="35" class="ms-2 me-3" alt="">
-                            <span id="inboxHolder">Ahmed Emon</span>
+                            <span id="inboxHolder"></span>
                         </div>
                         <div class="me-4">
                             <ul class="navbar-nav ms-auto">
