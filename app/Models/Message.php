@@ -16,4 +16,9 @@ class Message extends Model
         'type',
         'site'
     ];
+
+    public function conversation()
+    {
+        return $this->belongsTo(Conversation::class, 'conversation_id', 'id');
+    }
 }

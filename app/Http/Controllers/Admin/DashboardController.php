@@ -3,18 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\AgentWithdraw;
+use App\Mail\SendEmail;
 use App\Models\Conversation;
-use App\Models\LosingBonus;
 use App\Models\Message;
-use App\Models\SuperAgentWithdraw;
-use App\Models\Transaction;
 use App\Models\User;
-use App\Models\UsersPackage;
-use App\Models\WinningBonus;
-use App\Models\Withdraw;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class DashboardController extends Controller
 {
@@ -26,7 +20,7 @@ class DashboardController extends Controller
 
     public function viewConversation($id)
     {
-        $conversation = Conversation::with('messages')->findOrFail($id);
+        $conversation = Conversation::with(['messages', 'user'])->findOrFail($id);
         $data = $conversation->messages;
         return response()->json($data);
     }
@@ -60,5 +54,13 @@ class DashboardController extends Controller
         $data1->save();
 
         return response()->json([$data, $data1]);
+    }
+
+    public function sendEmail($id)
+    {
+        $conversation = Conversation::findOrFail($id);
+        $user = User::where('id', $conversation->user_id)->first();
+        Mail::to($user->email)->send(new SendEmail($user, $conversation));
+        return response()->json(['success'=>true]);
     }
 }
