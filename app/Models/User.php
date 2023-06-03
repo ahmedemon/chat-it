@@ -43,4 +43,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function conversation()
+    {
+        return $this->hasOne(Conversation::class, 'user_id', 'id');
+    }
 }

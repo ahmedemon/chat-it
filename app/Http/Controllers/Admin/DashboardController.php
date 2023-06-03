@@ -61,6 +61,6 @@ class DashboardController extends Controller
         $conversation = Conversation::findOrFail($id);
         $user = User::where('id', $conversation->user_id)->first();
         Mail::to($user->email)->send(new SendEmail($user, $conversation));
-        return response()->json(['success'=>true]);
+        return response()->json(['success' => true]);
     }
 }

@@ -25,9 +25,9 @@
         <div class="col-12">
             <div class="row bg-white">
                 <hr class="m-0">
-                <div class="col-3 px-0 border-end">
+                <div class="col-5 col-md-3 px-0 border-end">
                     <div class="border-bottom d-flex align-items-center justify-content-between" style="height: 6vh;">
-                        <img src="{{ asset('user/img/user.png') }}" height="35" class="ms-2" alt="">
+                        <img src="{{ asset('assets/soft-favicon-logo.png') }}" height="35" width="35" class="ms-2 rounded-circle border" alt="">
                         <div class="me-4">
                             <ul class="navbar-nav ms-auto">
                                 <li class="nav-item dropdown">
@@ -36,11 +36,11 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end py-0 rounded-0" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        <a class="btn btn-block w-100 rounded-0" href="{{ route('admin.logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                             {{ __('Logout') }}
                                         </a>
 
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
                                             @csrf
                                         </form>
                                     </div>
@@ -51,7 +51,7 @@
                     <div class="border-0 px-0" style="height: 91vh; overflow-y: scroll;" id="inboxes">
                     </div>
                 </div>
-                <div class="col-9 px-0 d-none" id="header-right">
+                <div class="col-7 col-md-9 px-0 d-none" id="header-right">
                     <div class="border-bottom d-flex justify-content-between align-items-center" style="height: 6vh;">
                         <div>
                             <img src="{{ asset('user/img/user.png') }}" height="35" class="ms-2 me-3" alt="">
@@ -85,7 +85,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-9 px-0" id="grettings-page">
+                <div class="col-7 col-md-9 px-0" id="grettings-page">
                     <div>
                         <div class="px-0" id="chat-box-container">
                             <div class="row mx-auto">
@@ -272,7 +272,7 @@
                         data = data + "<div class='my-3'>"
                         if (value.type == 'send') {
                             data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
-                            data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='me-2'>"
+                            data = data + "<img src='{{ asset('assets/user.png') }}' width='30' height='30' alt='' class='me-2'>"
                             data = data + "<div class='d-flex w-75'>"
                             data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
                             data = data + value.content
@@ -288,7 +288,7 @@
                             data = data + value.content
                             data = data + "</span>"
                             data = data + "</div>"
-                            data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2'>"
+                            data = data + "<img src='{{ asset('assets/soft-favicon-logo.png') }}' width='30' height='30' alt='' class='ms-2 rounded-circle border'>"
                             data = data + "</div>"
                         }
                         data = data + "</div>"
@@ -329,6 +329,7 @@
                 }
             });
         }
+
         function viewConversation(id) {
             var data_id = id;
             var url = "{{ route('admin.view.conversation', ':id') }}";
@@ -346,7 +347,7 @@
                     var sendEmailRoute = "{{ route('admin.send.email', ':id') }}";
                     sendEmailRoute = sendEmailRoute.replace(':id', data_id);
                     var sendEmailButton = "<a class='dropdown-item' href='" + sendEmailRoute + "'>Send Email</a>"
-                    var sendEmailButton = "<a class='dropdown-item' href='javascript:;' onclick='sendEmail("+data_id+")'>Send Email</a>"
+                    var sendEmailButton = "<a class='dropdown-item' href='javascript:;' onclick='sendEmail(" + data_id + ")'>Send Email</a>"
                     $("#inboxTrippleDot").html(sendEmailButton);
                     fetchData();
                 }

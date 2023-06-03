@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 
 <body id="body">
@@ -19,12 +20,42 @@
             @auth
                 <div class="container border px-0 {{ auth()->check() ? '' : 'd-none' }}" id="chat-box-container">
                     <div class="row mx-auto">
-                        <div class="col-md-12">
-                            <h4 class="text-center my-3" style="font-family: 'Courgette', cursive; font-weight: bold;">
-                                Welcome To <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">Soft Host IT</a> <br> Live Helping Point
-                            </h4>
+                        <div class="col-md-12 border-bottom">
+                            <div class="d-flex align-items-center justify-content-between" style="height: 6vh;">
+                                <div class="d-flex">
+                                    <img src="{{ asset('assets/soft-favicon-logo.png') }}" class="rounded-circle" height="35" width="35" class="" alt="">
+                                    <div class="d-flex align-items-center ms-2">
+                                        <div>
+                                            <h5 class="text-center my-0" style="font-family: 'Courgette', cursive; font-weight: bold; font-size: 16px;">
+                                                <a class="text-decoration-none" target="_blank" href="https://softhostit.com">Soft Host It</a>
+                                            </h5>
+                                            <h5 class="text-start text-success my-0" style="font-size: 9px;">
+                                                Active Now
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="me-0">
+                                    <ul class="navbar-nav ms-auto">
+                                        <li class="nav-item dropdown">
+                                            <a id="navbarDropdown" class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                                <i class="fas fa-ellipsis-v" style="font-size: 2.5vh;"></i>
+                                            </a>
+
+                                            <div class="dropdown-menu dropdown-menu-end py-0 rounded-0" style="width: 100% !important;" aria-labelledby="navbarDropdown">
+                                                <a class="btn btn-block w-100 rounded-0" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                    {{ __('Logout') }}
+                                                </a>
+
+                                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                                    @csrf
+                                                </form>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        <hr class="m-0">
                         <div style="height: 70vh; overflow-y: scroll; scroll-behavior: smooth;" id="scroll_bottom">
                             <div class="col-md-12 px-1 my-0" id="message_box">
                                 <div class="d-flex justify-content-center align-items-center" style="height: 100%; width: 100%;">
@@ -212,7 +243,7 @@
                         data = data + "</div>"
                     } else {
                         data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
-                        data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='me-2'>"
+                        data = data + "<img src='{{ asset('assets/soft-favicon-logo.png') }}' width='30' height='30' alt='' class='rounded-circle border me-2'>"
                         data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
                         data = data + messages[key].content
                         data = data + "</span>"

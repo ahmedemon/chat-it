@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -23,6 +27,26 @@ class LoginController extends Controller
         return view('web');
     }
 
+    public function logout(Request $request)
+    {
+        $id = Auth::user()->id;
+        $user = User::findOrFail($id);
+        $fromUrl = $user->conversation->from_url ?? 'softhostit.com';
+        $homeRoute = route('web');
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        if ($response = $this->loggedOut($request)) {
+            return $response;
+        }
+
+        return $request->wantsJson()
+            ? new JsonResponse([], 204)
+            : redirect()->to($homeRoute . '?' . $fromUrl);
+    }
     use AuthenticatesUsers;
 
     /**
