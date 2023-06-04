@@ -25,11 +25,11 @@
         <div class="col-12">
             <div class="row bg-white">
                 <hr class="m-0">
-                <div class="col-5 col-md-3 px-0 border-end">
+                <div class="col-12 col-md-3 px-0 border-end d-lg-block d-none bg-white sticky-sm-top" id="sidebar">
                     <div class="border-bottom d-flex align-items-center justify-content-between" style="height: 6vh;">
                         <img src="{{ asset('assets/soft-favicon-logo.png') }}" height="35" width="35" class="ms-2 rounded-circle border" alt="">
                         <div class="me-4">
-                            <ul class="navbar-nav ms-auto">
+                            <ul class="navbar-nav ms-auto flex-row">
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         <i class="fas fa-ellipsis-v" style="font-size: 2.5vh;"></i>
@@ -45,20 +45,23 @@
                                         </form>
                                     </div>
                                 </li>
+                                <li class="nav-item dropdown">
+                                    <button class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1 mt-1 toggle"><i class="fas fa-sliders-h" style="font-size: 2.5vh;"></i></button>
+                                </li>
                             </ul>
                         </div>
                     </div>
                     <div class="border-0 px-0" style="height: 91vh; overflow-y: scroll;" id="inboxes">
                     </div>
                 </div>
-                <div class="col-7 col-md-9 px-0 d-none" id="header-right">
+                <div class="col-12 col-md-9 px-0 d-none" id="header-right">
                     <div class="border-bottom d-flex justify-content-between align-items-center" style="height: 6vh;">
                         <div>
                             <img src="{{ asset('user/img/user.png') }}" height="35" class="ms-2 me-3" alt="">
                             <span id="inboxHolder"></span>
                         </div>
-                        <div class="me-4">
-                            <ul class="navbar-nav ms-auto">
+                        <div class="me-lg-4 me-2">
+                            <ul class="navbar-nav ms-auto flex-row">
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         <i class="fas fa-ellipsis-v" style="font-size: 2.5vh;"></i>
@@ -66,6 +69,9 @@
 
                                     <div class="dropdown-menu dropdown-menu-end py-0 rounded-0" id="inboxTrippleDot" aria-labelledby="navbarDropdown">
                                     </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <button class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1 mt-1 toggle"><i class="fas fa-sliders-h" style="font-size: 2.5vh;"></i></button>
                                 </li>
                             </ul>
                         </div>
@@ -85,12 +91,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-7 col-md-9 px-0" id="grettings-page">
+                <div class="col-12 col-md-9 px-0" id="grettings-page">
                     <div>
                         <div class="px-0" id="chat-box-container">
                             <div class="row mx-auto">
-                                <div class="d-flex justify-content-center align-items-center" style="height: 97vh;">
-                                    Welcome to the live support center of <a href="https://softhostit.com/" target="_blank" class="ms-1 text-decoration-none">Soft Host It</a>
+                                <div class="d-flex justify-content-center align-items-center flex-column" style="height: 97vh;">
+                                    <div>
+                                        <button class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1 mt-1 toggle"><i class="fas fa-sliders-h" style="font-size: 2.5vh;"></i></button>
+                                    </div>
+                                    <div class="text-center">
+                                        Welcome to the live support center <br> of <a href="https://softhostit.com/" target="_blank" class="ms-1 text-decoration-none">Soft Host It</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -114,15 +125,13 @@
         });
         // enter key to send
 
+        $(".toggle").on('click', function() {
+            $("#sidebar").toggleClass('d-none');
+            $("#header-right").toggleClass('d-none');
+        });
+
         $(document).keyup(function(e) {
             if (e.key === "Escape") { // escape key maps to keycode `27`
-                // fetch('http://chat-it.test/admin')
-                //     .then(response => response.text())
-                //     .then(data => {
-                //         document.getElementById('body').innerHTML = data;
-                //         getInboxes();
-                //     })
-                //     .catch(error => console.log(error));
                 $("#conversation_id").val('');
                 $("#grettings-page").removeClass('d-none');
                 $("#header-right").addClass('d-none');
@@ -342,6 +351,7 @@
                     $("#total_message").val(messages.length);
                     $("#header-right").removeClass('d-none');
                     $("#grettings-page").addClass('d-none');
+                    $("#sidebar").toggleClass('d-none');
                     var conversation_id = $("#conversation_id").val(id);
 
                     var sendEmailRoute = "{{ route('admin.send.email', ':id') }}";
