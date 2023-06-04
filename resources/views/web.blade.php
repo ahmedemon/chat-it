@@ -12,6 +12,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        @font-face {
+            font-family: 'sulymanLipi';
+            src: url({{ asset('assets/SolaimanLipi.ttf') }})
+        }
+
+        #sulymanLipi {
+            font-family: sulymanLipi;
+        }
+    </style>
 </head>
 
 <body id="body">
@@ -72,11 +82,21 @@
                     </div>
                 </div>
             @else
+                <div class="d-flex justify-content-center mb-3">
+                    <marquee>
+                        <h3 id="sulymanLipi">
+                            <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">সফট হোস্ট আইটি</a>’র লাইভ সাপোর্ট সেন্টারে আপনাকে স্বাগতম।
+                        </h3>
+                    </marquee>
+                </div>
                 <div class="container border rounded-3" id="login-register-container">
                     <div class="row mb-3 mx-auto">
                         <div class="col-md-12">
+                            <div class="d-flex justify-content-center mt-3">
+                                <img src="https://support.softhostit.com/public/assets/chat-head.png" height="150" alt="">
+                            </div>
                             <h4 class="text-center my-3" style="font-family: 'Courgette', cursive; font-weight: bold;">
-                                Welcome To <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">Soft Host IT</a>
+                                Welcome To <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">Soft Host IT</a> Live Support Center
                             </h4>
                         </div>
                         <div class="col-md-12 mb-2">
@@ -99,7 +119,7 @@
 
                         <div class="col-md-12">
                             <input type="hidden" id="from_url" type="from_url" value="{{ Crypt::encrypt($_SERVER['QUERY_STRING']) }}">
-                            <button type="submit" class="btn btn-primary w-100 mt-3" onclick="initial();">{{ __('Submit') }}</button>
+                            <button type="submit" class="btn btn-primary w-100 mt-3" onclick="initial();">{{ __('Start Chat') }}</button>
                         </div>
 
                     </div>
