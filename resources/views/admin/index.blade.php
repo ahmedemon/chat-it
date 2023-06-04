@@ -19,20 +19,26 @@
     ::-webkit-scrollbar-thumb:hover {
         background: #555;
     }
+
+    @media screen and (min-width: 300px) {
+        #main_container {
+            overflow: hidden;
+        }
+    }
 </style>
 @section('content')
-    <div class="row justify-content-center mx-auto vh-100 align-items-center">
+    <div class="row justify-content-center mx-auto vh-100 align-items-center" id="main_container">
         <div class="col-12">
             <div class="row bg-white">
                 <hr class="m-0">
-                <div class="col-12 col-md-3 px-0 border-end d-lg-block d-none bg-white sticky-sm-top" id="sidebar">
+                <div class="col-12 col-md-3 px-0 border-end d-lg-block d-none bg-white sticky-sm-top mb-lg-0 mb-5" id="sidebar">
                     <div class="border-bottom d-flex align-items-center justify-content-between" style="height: 6vh;">
                         <img src="{{ asset('assets/soft-favicon-logo.png') }}" height="35" width="35" class="ms-2 rounded-circle border" alt="">
                         <div class="me-4">
                             <ul class="navbar-nav ms-auto flex-row">
                                 <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        <i class="fas fa-ellipsis-v" style="font-size: 2.5vh;"></i>
+                                    <a id="navbarDropdown" class="btn btn-sm btn-outline-dark px-1 ms-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        <i class="fas fa-chevron-circle-down" style="font-size: 2.5vh;"></i>
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end py-0 rounded-0" aria-labelledby="navbarDropdown">
@@ -46,7 +52,7 @@
                                     </div>
                                 </li>
                                 <li class="nav-item dropdown">
-                                    <button class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1 mt-1 toggle"><i class="fas fa-sliders-h" style="font-size: 2.5vh;"></i></button>
+                                    <button class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1 toggle"><i class="fas fa-sliders-h" style="font-size: 2.5vh;"></i></button>
                                 </li>
                             </ul>
                         </div>
@@ -63,15 +69,18 @@
                         <div class="me-lg-4 me-2">
                             <ul class="navbar-nav ms-auto flex-row">
                                 <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        <i class="fas fa-ellipsis-v" style="font-size: 2.5vh;"></i>
+                                    <a id="navbarDropdown" class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        <i class="fas fa-chevron-circle-down" style="font-size: 2.5vh;"></i>
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end py-0 rounded-0" id="inboxTrippleDot" aria-labelledby="navbarDropdown">
                                     </div>
                                 </li>
                                 <li class="nav-item dropdown">
-                                    <button class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1 mt-1 toggle"><i class="fas fa-sliders-h" style="font-size: 2.5vh;"></i></button>
+                                    <button class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1 toggle-home"><i class="fas fa-home" style="font-size: 2.5vh;"></i></button>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <button class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1 toggle"><i class="fas fa-sliders-h" style="font-size: 2.5vh;"></i></button>
                                 </li>
                             </ul>
                         </div>
@@ -97,7 +106,7 @@
                             <div class="row mx-auto">
                                 <div class="d-flex justify-content-center align-items-center flex-column" style="height: 97vh;">
                                     <div>
-                                        <button class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1 mt-1 toggle"><i class="fas fa-sliders-h" style="font-size: 2.5vh;"></i></button>
+                                        <button class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1 toggle"><i class="fas fa-sliders-h" style="font-size: 2.5vh;"></i></button>
                                     </div>
                                     <div class="text-center">
                                         Welcome to the live support center <br> of <a href="https://softhostit.com/" target="_blank" class="ms-1 text-decoration-none">Soft Host It</a>
@@ -127,7 +136,13 @@
 
         $(".toggle").on('click', function() {
             $("#sidebar").toggleClass('d-none');
-            $("#header-right").toggleClass('d-none');
+        });
+
+        $(".toggle-home").on('click', function() {
+            $("#conversation_id").val('');
+            $("#grettings-page").removeClass('d-none');
+            $("#header-right").addClass('d-none');
+            $(".btn-outline-dark").removeClass('active');
         });
 
         $(document).keyup(function(e) {
@@ -359,6 +374,7 @@
                     var sendEmailButton = "<a class='dropdown-item' href='" + sendEmailRoute + "'>Send Email</a>"
                     var sendEmailButton = "<a class='dropdown-item' href='javascript:;' onclick='sendEmail(" + data_id + ")'>Send Email</a>"
                     $("#inboxTrippleDot").html(sendEmailButton);
+                    $("#sidebar").addClass('d-none');
                     fetchData();
                 }
             });
