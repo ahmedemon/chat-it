@@ -69,7 +69,7 @@
                         <div class="me-lg-4 me-2">
                             <ul class="navbar-nav ms-auto flex-row">
                                 <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    <a id="navbarDropdown" class="btn btn-sm btn-outline-dark px-1 ms-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         <i class="fas fa-chevron-circle-down" style="font-size: 2.5vh;"></i>
                                     </a>
 
@@ -148,6 +148,7 @@
         $(document).keyup(function(e) {
             if (e.key === "Escape") { // escape key maps to keycode `27`
                 $("#conversation_id").val('');
+                $("#total_message").val('');
                 $("#grettings-page").removeClass('d-none');
                 $("#header-right").addClass('d-none');
                 $(".btn-outline-dark").removeClass('active');
@@ -288,11 +289,16 @@
             var data_id = $("#conversation_id").val();
             var url = "{{ route('admin.view.conversation', ':id') }}";
             url = url.replace(':id', data_id);
-            fetch(url)
-                .then(response => response.json())
-                .then(messages => {
+            $.ajax({
+                type: "GET",
+                dataType: "JSON",
+                url: url,
+                success: function(messages) {
                     var data = "";
                     $.each(messages, function(key, value) {
+                        const dateString = value.created_at;
+                        const formattedDate = moment.utc(dateString).format("MMMM DD, YYYY, h:mm A");
+
                         data = data + "<div class='my-3'>"
                         if (value.type == 'send') {
                             data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
@@ -302,6 +308,7 @@
                             data = data + value.content
                             data = data + "<br>"
                             data = data + "<small class='text-success' style='font-size: 10px;'>From: " + value.site + "</small>"
+                            data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
                             data = data + "</span>"
                             data = data + "</div>"
                             data = data + "</div>"
@@ -310,6 +317,8 @@
                             data = data + "<div class='d-flex w-75 justify-content-end'>"
                             data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
                             data = data + value.content
+                            data = data + "<br>"
+                            data = data + "<small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
                             data = data + "</span>"
                             data = data + "</div>"
                             data = data + "<img src='{{ asset('assets/soft-favicon-logo.png') }}' width='30' height='30' alt='' class='ms-2 rounded-circle border'>"
@@ -322,18 +331,17 @@
                     var current_total = messages.length;
                     var total_message = $("#total_message").val();
                     $("#total_message").val(current_total);
-                })
-                .catch(error => {
-                    console.log('Error:', error);
-                });
+                }
+            });
         }
-        // refresh the section
         $(document).ready(function() {
-            fetchData();
+            var id = $("#conversation_id").val();
             setTimeout(() => {
-                fetchData();
+                console.log('ok');
+                fetchData(id);
             }, 10000);
         });
+        // refresh the section
 
         // fetching all data using ajax
         function sendEmail(id) {
