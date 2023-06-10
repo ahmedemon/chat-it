@@ -20,6 +20,7 @@ class AjaxController extends Controller
             'phone' => 'required',
         ]);
         $name = request()->name;
+        $device_id = request()->device_id;
         $phone = request()->phone;
         $email = request()->email;
         $from_url = Crypt::decrypt(request()->from_url);
@@ -38,6 +39,7 @@ class AjaxController extends Controller
             $user = User::where('email', $email)->first();
             $conversation = Conversation::where('user_id', $user->id)->first();
             $conversation->from_url = $from_url;
+            $conversation->device_id = $device_id;
             $conversation->save();
             // updating the url
 
@@ -48,7 +50,6 @@ class AjaxController extends Controller
                 'name' => $name,
                 'phone' => $phone,
                 'email' => $email,
-                'message' => $message,
                 'password' => Hash::make($password),
                 'show_password' => $password,
                 'email_verified_at' => now()
@@ -59,6 +60,7 @@ class AjaxController extends Controller
             $auth = Auth::user();
             $conversation = new Conversation();
             $conversation->user_id = $auth->id;
+            $conversation->device_id = $device_id;
             $conversation->name = $name;
             $conversation->from_url = $from_url;
             $conversation->save();

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('conversations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->string('device_id')->nullable();
             $table->string('name')->nullable();
             $table->string('from_url')->nullable();
             $table->string('status')->default('receive');

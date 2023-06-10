@@ -27,10 +27,9 @@
     }
 </style>
 @section('content')
-    <div class="row justify-content-center mx-auto vh-100 align-items-center" id="main_container">
+    <div class="row justify-content-center mx-auto align-items-center" id="main_container">
         <div class="col-12">
             <div class="row bg-white">
-                <hr class="m-0">
                 <div class="col-12 col-md-3 px-0 border-end d-lg-block d-none bg-white sticky-sm-top mb-lg-0 mb-5" id="sidebar">
                     <div class="border-bottom d-flex align-items-center justify-content-between" style="height: 6vh;">
                         <img src="{{ asset('assets/soft-favicon-logo.png') }}" height="35" width="35" class="ms-2 rounded-circle border" alt="">
@@ -57,7 +56,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="border-0 px-0" style="height: 91vh; overflow-y: scroll;" id="inboxes">
+                    <div class="border-0 px-0" style="height: 94vh; overflow-y: scroll;" id="inboxes">
                     </div>
                 </div>
                 <div class="col-12 col-md-9 px-0 d-none" id="header-right">
@@ -70,12 +69,13 @@
                             <ul class="navbar-nav ms-auto flex-row">
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" class="btn btn-sm btn-outline-dark px-1 ms-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        <i class="fas fa-chevron-circle-down" style="font-size: 2.5vh;"></i>
+                                        <i class="fas fa-envelope-open-text" style="font-size: 2.5vh;"></i>
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end py-0 rounded-0" id="inboxTrippleDot" aria-labelledby="navbarDropdown">
                                     </div>
                                 </li>
+                                <div id="conversationsAction"></div>
                                 <li class="nav-item dropdown">
                                     <button class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1 toggle-home"><i class="fas fa-home" style="font-size: 2.5vh;"></i></button>
                                 </li>
@@ -87,7 +87,10 @@
                     </div>
                     <div class="border-end px-0" id="chat-box-container">
                         <div class="row mx-auto">
-                            <div class="px-0" style="height: 91vh; overflow-y: scroll; scroll-behavior: smooth;" id="scroll_bottom">
+                            <div class="px-0" style="height: 94vh; overflow-y: scroll; scroll-behavior: smooth;" id="scroll_bottom">
+                                <p class="my-0 text-center sticky-top bg-white shadow-sm" style="z-index: unset;">
+                                    <small id="userInfo"></small>
+                                </p>
                                 <div class="col-md-12 px-3 my-0" id="message_box">
                                 </div>
                                 <div class="input-group p-3 sticky-bottom bg-white shadow" id="input_box">
@@ -104,7 +107,7 @@
                     <div>
                         <div class="px-0" id="chat-box-container">
                             <div class="row mx-auto">
-                                <div class="d-flex justify-content-center align-items-center flex-column" style="height: 97vh;">
+                                <div class="d-flex justify-content-center align-items-center flex-column" style="height: 100vh;">
                                     <div>
                                         <button class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1 toggle"><i class="fas fa-sliders-h" style="font-size: 2.5vh;"></i></button>
                                     </div>
@@ -295,7 +298,7 @@
                 url: url,
                 success: function(messages) {
                     var data = "";
-                    $.each(messages, function(key, value) {
+                    $.each(messages[0], function(key, value) {
                         const dateString = value.created_at;
                         const formattedDate = moment.utc(dateString).format("MMMM DD, YYYY, h:mm A");
 
@@ -326,8 +329,22 @@
                         }
                         data = data + "</div>"
                         $("#conversation_id").val(value.conversation_id);
+
                     })
                     $('#message_box').html(data);
+
+                    // get user info for conversation
+                    var html = '';
+                    html = html + '<li class="nav-item dropdown">'
+                    html = html + '<a href="tel:' + messages[1].phone + '" class="btn btn-sm btn-outline-dark px-1 ms-1">'
+                    html = html + '<i class="fas fa-phone" style="font-size: 2.5vh;"></i>'
+                    html = html + '</a>'
+                    html = html + '</li>'
+                    $("#conversationsAction").html(html);
+                    $("#inboxHolder").html(messages[1].name);
+                    $("#userInfo").html(messages[1].email + '<br>' + messages[1].phone);
+                    // get user info for conversation
+
                     var current_total = messages.length;
                     var total_message = $("#total_message").val();
                     $("#total_message").val(current_total);

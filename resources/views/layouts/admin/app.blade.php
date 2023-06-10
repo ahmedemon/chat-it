@@ -17,7 +17,7 @@
 
 <body id="body" style="background-color: #111b21;">
     <div class="row justify-content-center mx-auto">
-        <div class="col-md-10">
+        <div class="col-md-12 p-0">
             @yield('content')
         </div>
     </div>

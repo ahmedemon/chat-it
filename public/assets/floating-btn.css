@@ -28,6 +28,10 @@
         transition: all 0.4s;
     }
 
+    .floatingButton img {
+        width: 80px;
+    }
+
     .floatingButton .fas {
         font-size: 25px !important;
     }
@@ -52,14 +56,14 @@
 
     .floatingChatBox {
         position: absolute;
-        bottom: 70px;
-        right: 0px;
+        bottom: 130px;
+        right: 45px;
         width: 400px;
         height: auto;
         display: none;
         background-color: white;
         border-radius: 10px;
-        border: 1px solid #d5d5d5;
+        box-shadow: 0px 0px 15px -10px black;
     }
 
     /* width */
@@ -81,4 +85,48 @@
     /* Handle on hover */
     ::-webkit-scrollbar-thumb:hover {
         background: #555;
+    }
+
+    .main-chatbox-container {
+        padding: 20px;
+    }
+
+    .chatbox-header {
+        text-align: center;
+        font-size: 25px;
+        font-family: 'Courgette', cursive;
+        font-weight: bold;
+    }
+
+    .chatbox-body {
+        text-align: center;
+    }
+
+    .chatbox-greetings span {
+        color: lightseagreen;
+    }
+
+    .chatbox-introduction a {
+        color: lightseagreen;
+    }
+
+    .chatbox-chat-button {
+        padding: 10px 20px;
+        border-radius: 20px;
+        border: 1px solid gray;
+    }
+
+    .chatbox-chat-button:hover {
+        background-color: lightseagreen;
+        color: white;
+        border: 1px solid lightseagreen;
+    }
+
+    .footer-text {
+        margin: 0;
+        text-align: center
+    }
+
+    .chatbox-button-box {
+        margin: 30px 0px;
     }

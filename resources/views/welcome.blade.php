@@ -53,7 +53,7 @@
                 </div>
                 <div class="col-md-12">
                     <label for="name" class="text-md-end">{{ __('Name') }}</label>
-                    <input id="name" type="name" class="form-control mb-3" name="name" value="{{ old('name') }}" required placeholder="Name">
+                    <input id="name" type="text" class="form-control mb-3" name="name" value="{{ old('name') }}" required placeholder="Name">
                     <span class="text-danger small" id="name_Error"></span>
                 </div>
 

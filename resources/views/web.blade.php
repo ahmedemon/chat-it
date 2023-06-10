@@ -105,6 +105,10 @@
                             <span class="text-danger small" id="name_Error"></span>
                         </div>
 
+                        <div class="col-md-12">
+                            <input id="device_id" type="hidden" class="form-control mb-3" name="device_id">
+                        </div>
+
                         <div class="col-md-12 mb-2">
                             <label for="email" class="text-md-end">{{ __('Email Address') }}</label>
                             <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required placeholder="Email address">

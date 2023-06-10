@@ -21,7 +21,7 @@ class DashboardController extends Controller
     public function viewConversation($id)
     {
         $conversation = Conversation::with(['messages', 'user'])->findOrFail($id);
-        $data = $conversation->messages;
+        $data = [$conversation->messages, $conversation->user];
         return response()->json($data);
     }
 
