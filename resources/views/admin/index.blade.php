@@ -300,7 +300,7 @@
                     var data = "";
                     $.each(messages[0], function(key, value) {
                         const dateString = value.created_at;
-                        const formattedDate = moment.utc(dateString).format("MMMM DD, YYYY, h:mm A");
+                        const formattedDate = moment.utc(dateString).tz('Asia/Dhaka').format("MMMM DD, YYYY, h:mm A");
 
                         data = data + "<div class='my-3'>"
                         if (value.type == 'send') {
