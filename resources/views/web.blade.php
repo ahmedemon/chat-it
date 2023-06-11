@@ -25,60 +25,58 @@
 </head>
 
 <body id="body">
-    <div class="row justify-content-center mx-auto vh-100 align-items-center">
-        <div class="col-md-4">
+    <div class="row justify-content-center mx-auto align-items-center" style="height: 100vh;">
+        <div class="col-md-4 col-12 px-0">
             @auth
-                <div class="container border px-0 {{ auth()->check() ? '' : 'd-none' }}" id="chat-box-container">
-                    <div class="row mx-auto">
-                        <div class="col-md-12 border-bottom">
-                            <div class="d-flex align-items-center justify-content-between" style="height: 6vh;">
-                                <div class="d-flex">
-                                    <img src="{{ asset('assets/soft-favicon-logo.png') }}" class="rounded-circle" height="35" width="35" class="" alt="">
-                                    <div class="d-flex align-items-center ms-2">
-                                        <div>
-                                            <h5 class="text-center my-0" style="font-family: 'Courgette', cursive; font-weight: bold; font-size: 16px;">
-                                                <a class="text-decoration-none" target="_blank" href="https://softhostit.com">Soft Host It</a>
-                                            </h5>
-                                            <h5 class="text-start text-success my-0" style="font-size: 9px;">
-                                                Active Now
-                                            </h5>
-                                        </div>
+                <div class=" px-0 {{ auth()->check() ? '' : 'd-none' }}" id="chat-box-container">
+                    <div class="row mx-auto border-start">
+                        <div class="col-md-12 shadow-sm d-flex justify-content-between align-items-center" style="height: 5vh;">
+                            <div class="d-flex">
+                                <img src="{{ asset('assets/soft-favicon-logo.png') }}" class="rounded-circle" style="height: 4vh;" class="" alt="">
+                                <div class="d-flex align-items-center ms-2">
+                                    <div>
+                                        <h5 class="text-center my-0" style="font-family: 'Courgette', cursive; font-weight: bold; font-size: 16px;">
+                                            <a class="text-decoration-none" target="_blank" href="https://softhostit.com">Soft Host It</a>
+                                        </h5>
+                                        <h5 class="text-start text-success my-0" style="font-size: 9px;">
+                                            Active Now
+                                        </h5>
                                     </div>
                                 </div>
-                                <div class="me-0">
-                                    <ul class="navbar-nav ms-auto">
-                                        <li class="nav-item dropdown">
-                                            <a id="navbarDropdown" class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                                <i class="fas fa-ellipsis-v" style="font-size: 2.5vh;"></i>
+                            </div>
+                            <div class="me-0">
+                                <ul class="navbar-nav ms-auto">
+                                    <li class="nav-item dropdown">
+                                        <a id="navbarDropdown" class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                            <i class="fas fa-ellipsis-v" style="font-size: 20px;"></i>
+                                        </a>
+
+                                        <div class="dropdown-menu dropdown-menu-end py-0 rounded-0" style="width: 100% !important;" aria-labelledby="navbarDropdown">
+                                            <a class="btn btn-block w-100 rounded-0" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                {{ __('Logout') }}
                                             </a>
 
-                                            <div class="dropdown-menu dropdown-menu-end py-0 rounded-0" style="width: 100% !important;" aria-labelledby="navbarDropdown">
-                                                <a class="btn btn-block w-100 rounded-0" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                                    {{ __('Logout') }}
-                                                </a>
-
-                                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                                    @csrf
-                                                </form>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                                @csrf
+                                            </form>
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
-                        <div style="height: 70vh; overflow-y: scroll; scroll-behavior: smooth;" id="scroll_bottom">
+                        <div style="height: 90vh; overflow-y: scroll; scroll-behavior: smooth;" id="scroll_bottom">
                             <div class="col-md-12 px-1 my-0" id="message_box">
                                 <div class="d-flex justify-content-center align-items-center" style="height: 100%; width: 100%;">
                                     Welcome to the live support center of <a href="https://softhostit.com/" target="_blank" class="ms-1 text-decoration-none">Soft Host It</a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="input-group">
-                        <input type="hidden" id="conversation_id" name="conversation_id" value="">
-                        <input type="hidden" id="total_message" name="total_message" value="">
-                        <input type="text" name="message_body" id="message_body" class="form-control border-bottom-0 border-top border-start border-end border-0 shadow" placeholder="Type Here...">
-                        <button class="btn btn-primary rounded-0" id="sendBtn" onclick="sendMessage();">Send</button>
+                        <div class="input-group px-0" style="height: 5vh;">
+                            <input type="hidden" id="conversation_id" name="conversation_id" value="">
+                            <input type="hidden" id="total_message" name="total_message" value="">
+                            <input type="text" name="message_body" id="message_body" class="form-control form-control-sm border-bottom-0 border-top border-start border-end border-0 shadow" placeholder="Type Here...">
+                            <button class="btn btn-sm btn-primary rounded-0" id="sendBtn" onclick="sendMessage();">Send</button>
+                        </div>
                     </div>
                 </div>
             @else
@@ -276,7 +274,7 @@
                     data = data + "</div>"
                 })
                 $('#message_box').html(data);
-                setTimeout(getAllMessages, 1000);
+                setTimeout(getAllMessages, 2000);
             }
         });
     }
