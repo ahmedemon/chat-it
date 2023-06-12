@@ -96,6 +96,10 @@
                                 <div class="input-group p-3 sticky-bottom bg-white shadow" id="input_box">
                                     <input type="hidden" id="total_message" name="total_message" value="">
                                     <input type="hidden" id="conversation_id" name="conversation_id" value="">
+                                    <a id="attachment" class="btn border d-flex align-items-center" href="javascript:;" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                        <i class="fas fa-paperclip" style="font-size: 20px;"></i>
+                                    </a>
+                                    <input type="file" class="d-none" id="attachmentFile" name="image">
                                     <input type="text" name="message_body" id="message_body" class="form-control shadow-none border" placeholder="Type Here...">
                                     <button class="btn btn-primary rounded-0" id="sendBtn" onclick="sendMessage();">Send</button>
                                 </div>
@@ -122,9 +126,63 @@
             </div>
         </div>
     </div>
+    @include('image-modal')
 @endsection
 @push('js')
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('attachmentFile');
+            const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+            const selectedImageElement = document.getElementById('selectedImage');
+            const sendImage = document.getElementById('sendImage');
+
+            fileInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedImageElement.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                modal.show();
+            });
+
+            sendImage.addEventListener('click', function() {
+                closeModal();
+            });
+
+            modal._element.addEventListener('click', function(event) {
+                if (event.target === modal._element) {
+                    closeModal();
+                }
+            });
+
+            function closeModal() {
+                modal.hide();
+                $("#attachmentFile").val('');
+            }
+
+            $(".btn-close").on('click', function() {
+                $("#attachmentFile").val('');
+            });
+        });
+        // enter key to send
+        $(document).ready(function() {
+            $('#message_body').keydown(function(event) {
+                if (event.keyCode === 13) { // Check if Enter key is pressed
+                    event.preventDefault(); // Prevent default behavior
+                    $("#sendBtn").click();
+                }
+            });
+
+            $("#attachment").on('click', function() {
+                $("#attachmentFile").click();
+            });
+        });
+        // enter key to send
+    </script>
+
     <script>
         // enter key to send
         $(document).ready(function() {
@@ -307,22 +365,39 @@
                             data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
                             data = data + "<img src='{{ asset('assets/user.png') }}' width='30' height='30' alt='' class='me-2'>"
                             data = data + "<div class='d-flex w-75'>"
-                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
-                            data = data + value.content
-                            data = data + "<br>"
-                            data = data + "<small class='text-success' style='font-size: 10px;'>From: " + value.site + "</small>"
-                            data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
-                            data = data + "</span>"
+                            if (value.check_image == 1) {
+                                data = data + "<div>"
+                                data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "'>"
+                                data = data + "<br>"
+                                data = data + "<small class='text-success' style='font-size: 10px;'>From: " + value.site + "</small>"
+                                data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                                data = data + "</div>"
+                            } else {
+                                data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
+                                data = data + value.content
+                                data = data + "<br>"
+                                data = data + "<small class='text-success' style='font-size: 10px;'>From: " + value.site + "</small>"
+                                data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                                data = data + "</span>"
+                            }
                             data = data + "</div>"
                             data = data + "</div>"
                         } else {
                             data = data + "<div class='d-flex align-items-end justify-content-end clients-message mb-2'>"
                             data = data + "<div class='d-flex w-75 justify-content-end'>"
-                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
-                            data = data + value.content
-                            data = data + "<br>"
-                            data = data + "<small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
-                            data = data + "</span>"
+                            if (value.check_image == 1) {
+                                data = data + "<div class='text-end'>"
+                                data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "'>"
+                                data = data + "<br>"
+                                data = data + "<small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                                data = data + "</div>"
+                            } else {
+                                data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
+                                data = data + value.content
+                                data = data + "<br>"
+                                data = data + "<small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                                data = data + "</span>"
+                            }
                             data = data + "</div>"
                             data = data + "<img src='{{ asset('assets/soft-favicon-logo.png') }}' width='30' height='30' alt='' class='ms-2 rounded-circle border'>"
                             data = data + "</div>"
@@ -446,17 +521,24 @@
         function sendMessage() {
             var conversation_id = $('#conversation_id').val();
             var message_body = $('#message_body').val();
+            var image = $('#attachmentFile')[0].files[0]; // Get the selected image file
 
             var url = "{{ route('admin.send.message', ':id') }}";
             url = url.replace(':id', conversation_id);
+
+            // Create a FormData object
+            var formData = new FormData();
+            formData.append('image', image);
+            formData.append('conversation_id', conversation_id);
+            formData.append('message_body', message_body);
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
             $.ajax({
                 type: "POST",
                 dataType: "json",
-                data: {
-                    conversation_id: conversation_id,
-                    message_body: message_body,
-                    _token: $('meta[name="csrf-token"]').attr('content'),
-                },
+                data: formData, // Use the FormData object as the data
+                contentType: false, // Set contentType to false, jQuery will automatically set the appropriate content type
+                processData: false, // Prevent jQuery from processing the data
+                enctype: 'multipart/form-data', // Set the enctype option
                 url: url,
                 success: function(success) {
                     var conversation_id = success.conversation_id;

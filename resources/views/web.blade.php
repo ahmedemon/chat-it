@@ -74,6 +74,10 @@
                         <div class="input-group px-0" style="height: 5vh;">
                             <input type="hidden" id="conversation_id" name="conversation_id" value="">
                             <input type="hidden" id="total_message" name="total_message" value="">
+                            <a id="attachment" class="btn border d-flex align-items-center" href="javascript:;" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <i class="fas fa-paperclip" style="font-size: 20px;"></i>
+                            </a>
+                            <input type="file" class="d-none" id="attachmentFile" name="image">
                             <input type="text" name="message_body" id="message_body" class="form-control form-control-sm border-bottom-0 border-top border-start border-end border-0 shadow" placeholder="Type Here...">
                             <button class="btn btn-sm btn-primary rounded-0" id="sendBtn" onclick="sendMessage();">Send</button>
                         </div>
@@ -129,13 +133,49 @@
             @endauth
         </div>
     </div>
-
+    @include('image-modal')
 </body>
 
 </html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('attachmentFile');
+        const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+        const selectedImageElement = document.getElementById('selectedImage');
+        const sendImage = document.getElementById('sendImage');
+
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                selectedImageElement.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            modal.show();
+        });
+
+        sendImage.addEventListener('click', function() {
+            closeModal();
+        });
+
+        modal._element.addEventListener('click', function(event) {
+            if (event.target === modal._element) {
+                closeModal();
+            }
+        });
+
+        function closeModal() {
+            modal.hide();
+            $("#attachmentFile").val('');
+        }
+
+        $(".btn-close").on('click', function() {
+            $("#attachmentFile").val('');
+        });
+    });
     // enter key to send
     $(document).ready(function() {
         $('#message_body').keydown(function(event) {
@@ -144,9 +184,14 @@
                 $("#sendBtn").click();
             }
         });
+
+        $("#attachment").on('click', function() {
+            $("#attachmentFile").click();
+        });
     });
     // enter key to send
-
+</script>
+<script>
     setTimeout(function() {
         location.reload();
     }, 1000000);
@@ -256,19 +301,27 @@
                 $.each(messages, function(key, value) {
                     $("#total_message").val(messages.length);
                     data = data + "<div class='my-3'>"
-                    if (messages[key].type == 'send') {
+                    if (value.type == 'send') {
                         data = data + "<div class='d-flex align-items-end justify-content-end clients-message mb-2'>"
-                        data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
-                        data = data + messages[key].content
-                        data = data + "</span>"
+                        if (value.check_image == 1) {
+                            data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "'>"
+                        } else {
+                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
+                            data = data + value.content
+                            data = data + "</span>"
+                        }
                         data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2'>"
                         data = data + "</div>"
                     } else {
                         data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
                         data = data + "<img src='{{ asset('assets/soft-favicon-logo.png') }}' width='30' height='30' alt='' class='rounded-circle border me-2'>"
-                        data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
-                        data = data + messages[key].content
-                        data = data + "</span>"
+                        if (value.check_image == 1) {
+                            data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "'>"
+                        } else {
+                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
+                            data = data + value.content
+                            data = data + "</span>"
+                        }
                         data = data + "</div>"
                     }
                     data = data + "</div>"
@@ -298,14 +351,21 @@
     function sendMessage() {
         var conversation_id = $('#conversation_id').val();
         var message_body = $('#message_body').val();
+        var image = $('#attachmentFile')[0].files[0]; // Get the selected image file
+
+        // Create a FormData object
+        var formData = new FormData();
+        formData.append('image', image);
+        formData.append('conversation_id', conversation_id);
+        formData.append('message_body', message_body);
+        formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
         $.ajax({
-            type: "GET",
+            type: "POST", // Change the request type to POST
             dataType: "json",
-            data: {
-                conversation_id: conversation_id,
-                message_body: message_body,
-                _token: $('meta[name="csrf-token"]').attr('content'),
-            },
+            data: formData, // Use the FormData object as the data
+            contentType: false, // Set contentType to false, jQuery will automatically set the appropriate content type
+            processData: false, // Prevent jQuery from processing the data
+            enctype: 'multipart/form-data', // Set the enctype option
             url: "{{ route('user.send.message') }}",
             success: function(success) {
                 getAllMessages();

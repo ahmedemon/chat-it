@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('site')->nullable();
             $table->string('status')->default('sent');
+            $table->boolean('check_image')->default(0);
             $table->timestamps();
         });
     }

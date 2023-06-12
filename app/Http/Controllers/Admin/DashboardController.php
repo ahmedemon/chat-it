@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\FileManager;
 use App\Http\Controllers\Controller;
 use App\Mail\SendEmail;
 use App\Models\Conversation;
@@ -30,12 +31,32 @@ class DashboardController extends Controller
         $text = $request->message_body;
         $conversation = Conversation::findOrFail($id);
         $user = User::findOrFail($conversation->user_id);
-        $data = Message::create([
-            'user_id' => $user->id,
-            'conversation_id' => $conversation->id,
-            'type' => 'receive',
-            'content' => $text,
-        ]);
+
+        $data = new Message();
+        $data->user_id = $user->id;
+        $data->conversation_id = $conversation->id;
+        $data->type = 'receive';
+        $data->content = $text;
+
+        if ($text == null) {
+            $this->validate(request(), [
+                'image' => 'required'
+            ], [
+                'image.required' => 'Please select an image first.'
+            ]);
+            $file = new FileManager();
+            if (request()->image) {
+                $photo = request()->image;
+                $file->folder('messages')->prefix(date('d'))
+                    ->upload($photo) ?
+                    $data->content = $file->getName() : null;
+                $data->check_image = 1; // check if sent an image
+            }
+        } else {
+            $data->content = $text;
+        }
+
+        $data->save();
         return response()->json($data);
     }
 
