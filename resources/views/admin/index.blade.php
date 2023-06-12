@@ -93,6 +93,9 @@
                                 </p>
                                 <div class="col-md-12 px-3 my-0" id="message_box">
                                 </div>
+                                <div class="text-center position-fixed mb-5" style="bottom: 70;right: 20;">
+                                    <span id="scrollBottom" class="btn btn-info p-0 rounded-circle"><i class="fas fa-arrow-alt-circle-down text-white rounded-circle" style="font-size: 30px; color: transparent;"></i></span>
+                                </div>
                                 <div class="input-group p-3 sticky-bottom bg-white shadow" id="input_box">
                                     <input type="hidden" id="total_message" name="total_message" value="">
                                     <input type="hidden" id="conversation_id" name="conversation_id" value="">
@@ -181,6 +184,13 @@
             });
         });
         // enter key to send
+
+        $("#scrollBottom").on('click', function() {
+            setTimeout(function() {
+                var scrollDiv = $('#scroll_bottom');
+                scrollDiv.scrollTop(scrollDiv.prop('scrollHeight'));
+            }, 500);
+        });
     </script>
 
     <script>
