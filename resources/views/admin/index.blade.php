@@ -172,13 +172,6 @@
         });
         // enter key to send
         $(document).ready(function() {
-            $('#message_body').keydown(function(event) {
-                if (event.keyCode === 13) { // Check if Enter key is pressed
-                    event.preventDefault(); // Prevent default behavior
-                    $("#sendBtn").click();
-                }
-            });
-
             $("#attachment").on('click', function() {
                 $("#attachmentFile").click();
             });
@@ -374,10 +367,10 @@
                         if (value.type == 'send') {
                             data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
                             data = data + "<img src='{{ asset('assets/user.png') }}' width='30' height='30' alt='' class='me-2'>"
-                            data = data + "<div class='d-flex w-75'>"
+                            data = data + "<div class='d-flex w-75 align-items-center'>"
                             if (value.check_image == 1) {
                                 data = data + "<div>"
-                                data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "'>"
+                                data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
                                 data = data + "<br>"
                                 data = data + "<small class='text-success' style='font-size: 10px;'>From: " + value.site + "</small>"
                                 data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
@@ -390,6 +383,18 @@
                                 data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
                                 data = data + "</span>"
                             }
+                            // reply button
+                            data = data + "<div>"
+                            data = data + '<ul class="navbar-nav ms-auto flex-row">'
+                            data = data + '<li class="nav-item dropdown">'
+                            data = data + '<a href="" class="btn btn-sm btn-outline-dark px-1 ms-1">'
+                            data = data + '<i class="fas fa-reply" style="font-size: 2vh;"></i>'
+                            data = data + '</a>'
+                            data = data + '</li>'
+                            data = data + '</ul>'
+                            data = data + "</div>"
+                            // reply button
+
                             data = data + "</div>"
                             data = data + "</div>"
                         } else {
@@ -397,7 +402,7 @@
                             data = data + "<div class='d-flex w-75 justify-content-end'>"
                             if (value.check_image == 1) {
                                 data = data + "<div class='text-end'>"
-                                data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "'>"
+                                data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
                                 data = data + "<br>"
                                 data = data + "<small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
                                 data = data + "</div>"
@@ -415,6 +420,22 @@
                         data = data + "</div>"
                         $("#conversation_id").val(value.conversation_id);
 
+                        if (value.check_image == 1) {
+                            // click to show image
+                            data = data + '<div class="modal fade" id="imageModal' + value.id + '" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">'
+                            data = data + '<div class="modal-dialog modal-dialog-centered">'
+                            data = data + '<div class="modal-content">'
+                            data = data + '<div class="modal-body">'
+                            data = data + '<div class="d-flex justify-content-end">'
+                            data = data + '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'
+                            data = data + '</div>'
+                            data = data + "<img width='100%' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "'>"
+                            data = data + '</div>'
+                            data = data + '</div>'
+                            data = data + '</div>'
+                            data = data + '</div>'
+                            // click to show image
+                        }
                     })
                     $('#message_box').html(data);
 
@@ -441,6 +462,7 @@
             setTimeout(() => {
                 console.log('ok');
                 fetchData(id);
+                $('.modal').modal('hide');
             }, 10000);
         });
         // refresh the section

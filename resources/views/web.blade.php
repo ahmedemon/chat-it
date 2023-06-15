@@ -21,6 +21,28 @@
         #sulymanLipi {
             font-family: sulymanLipi;
         }
+
+        #scroll_bottom {
+            height: 80vh;
+            overflow-y: scroll;
+            scroll-behavior: smooth;
+        }
+
+        #header {
+            border-top: 1px solid gainsboro;
+            border-right: 1px solid gainsboro;
+        }
+
+        @media screen and (min-width: 300px) and (max-width: 768px) {
+            #scroll_bottom {
+                height: 90vh;
+            }
+
+            #header {
+                border-top: 0px solid gainsboro;
+                border-right: 0px solid gainsboro;
+            }
+        }
     </style>
 </head>
 
@@ -30,7 +52,7 @@
             @auth
                 <div class=" px-0 {{ auth()->check() ? '' : 'd-none' }}" id="chat-box-container">
                     <div class="row mx-auto border-start">
-                        <div class="col-md-12 shadow-sm d-flex justify-content-between align-items-center" style="height: 5vh;">
+                        <div class="col-md-12 shadow-sm d-flex justify-content-between align-items-center" id="header" style="height: 5vh;">
                             <div class="d-flex">
                                 <img src="{{ asset('assets/soft-favicon-logo.png') }}" class="rounded-circle" style="height: 4vh;" class="" alt="">
                                 <div class="d-flex align-items-center ms-2">
@@ -64,7 +86,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div style="height: 90vh; overflow-y: scroll; scroll-behavior: smooth;" id="scroll_bottom">
+                        <div id="scroll_bottom">
                             <div class="col-md-12 px-1 my-0" id="message_box">
                                 <div class="d-flex justify-content-center align-items-center" style="height: 100%; width: 100%;">
                                     Welcome to the live support center of <a href="https://softhostit.com/" target="_blank" class="ms-1 text-decoration-none">Soft Host It</a>
@@ -78,7 +100,7 @@
                                 <i class="fas fa-paperclip" style="font-size: 20px;"></i>
                             </a>
                             <input type="file" class="d-none" id="attachmentFile" name="image">
-                            <input type="text" name="message_body" id="message_body" class="form-control form-control-sm border-bottom-0 border-top border-start border-end border-0 shadow" placeholder="Type Here...">
+                            <input type="text" name="message_body" id="message_body" class="form-control form-control-sm border-bottom border-top border-start border-end border-0 shadow-none" placeholder="Type Here...">
                             <button class="btn btn-sm btn-primary rounded-0" id="sendBtn" onclick="sendMessage();">Send</button>
                         </div>
                     </div>
@@ -139,7 +161,8 @@
 </html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="{{ asset('assets/moment.js') }}"></script>
+<script src="{{ asset('assets/moment.timezone.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const fileInput = document.getElementById('attachmentFile');
@@ -299,15 +322,23 @@
                 $("#conversation_id").val(messages[0].conversation_id);
                 var data = "";
                 $.each(messages, function(key, value) {
+                    const dateString = value.created_at;
+                    const formattedDate = moment.utc(dateString).tz('Asia/Dhaka').format("MMMM DD, YYYY, h:mm A");
+
                     $("#total_message").val(messages.length);
                     data = data + "<div class='my-3'>"
                     if (value.type == 'send') {
                         data = data + "<div class='d-flex align-items-end justify-content-end clients-message mb-2'>"
                         if (value.check_image == 1) {
-                            data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "'>"
+                            data = data + "<div class='text-end'>"
+                            data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
+                            data = data + "<br>"
+                            data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                            data = data + "</div>"
                         } else {
-                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
+                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
                             data = data + value.content
+                            data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
                             data = data + "</span>"
                         }
                         data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2'>"
@@ -316,18 +347,45 @@
                         data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
                         data = data + "<img src='{{ asset('assets/soft-favicon-logo.png') }}' width='30' height='30' alt='' class='rounded-circle border me-2'>"
                         if (value.check_image == 1) {
-                            data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "'>"
+                            data = data + "<div class='text-start'>"
+                            data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
+                            data = data + "<br>"
+                            data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                            data = data + "</div>"
                         } else {
-                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; width: 80% !important; background-color:#ececec;'>"
+                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
                             data = data + value.content
+                            data = data + "<br>"
+                            data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
                             data = data + "</span>"
                         }
                         data = data + "</div>"
                     }
                     data = data + "</div>"
+
+                    if (value.check_image == 1) {
+                        // click to show image
+                        data = data + '<div class="modal fade" id="imageModal' + value.id + '" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">'
+                        data = data + '<div class="modal-dialog modal-dialog-centered">'
+                        data = data + '<div class="modal-content">'
+                        data = data + '<div class="modal-body">'
+                        data = data + '<div class="d-flex justify-content-end">'
+                        data = data + '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'
+                        data = data + '</div>'
+                        data = data + "<img width='100%' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "'>"
+                        data = data + '</div>'
+                        data = data + '</div>'
+                        data = data + '</div>'
+                        data = data + '</div>'
+                        // click to show image
+                    }
                 })
+
                 $('#message_box').html(data);
-                setTimeout(getAllMessages, 2000);
+                setTimeout(() => {
+                    $('.modal').modal('hide');
+                    getAllMessages();
+                }, 3000);
             }
         });
     }

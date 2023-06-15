@@ -122,4 +122,12 @@ class ApiController extends Controller
             return response()->json($user);
         }
     }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+        Auth::guard('admin')->attempt($credentials, $request->boolean('remember'));
+        $data = Auth::guard('admin')->user();
+        return response()->json($data);
+    }
 }
