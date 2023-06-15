@@ -16,23 +16,23 @@
     var i = document.createElement("div");
     i.className = "chatbox-header";
     var l = document.createElement("span");
-    l.textContent = "Live Chat Now", i.appendChild(l);
+    l.textContent = "সরাসরি কথা বলুন", i.appendChild(l);
     var r = document.createElement("hr");
     var d = document.createElement("div");
     d.className = "chatbox-body";
     var p = document.createElement("p");
-    p.className = "chatbox-greetings", p.innerHTML = '<span>Hello,</span> Thanks for visiting our website.';
+    p.className = "chatbox-greetings", p.innerHTML = 'আমাদের ওয়েবসাইট পরিদর্শন করার জন্য ধন্যবাদ.';
     var h = document.createElement("p");
-    h.className = "chatbox-introduction", h.innerHTML = 'Have you any question about <a href="/">' + document.location.host + "</a>?";
+    h.className = "chatbox-introduction", h.innerHTML = '<a href="/">' + document.location.host + "</a> সম্পর্কে কোন প্রশ্ন থাকলে?";
     var m = document.createElement("div");
     m.className = "chatbox-button-box";
     var g = document.createElement("a");
-    g.className = "chatbox-chat-button", g.href = "https://support.softhostit.com/web?" + document.location.host, g.target = "_blank", g.textContent = "Chat With Us", m.appendChild(g), d.appendChild(p), d.appendChild(h), d.appendChild(m);
+    g.className = "chatbox-chat-button", g.href = "https://support.softhostit.com/web?" + document.location.host, g.target = "_blank", g.textContent = "এখানে ক্লিক করুন", m.appendChild(g), d.appendChild(p), d.appendChild(h), d.appendChild(m);
     var u = document.createElement("hr");
     var b = document.createElement("div");
     b.className = "chatbox-footer";
     var f = document.createElement("p");
-    f.className = "footer-text", f.textContent = "We provide service from 10 am to 10 pm.", b.appendChild(f), s.appendChild(i), s.appendChild(r), s.appendChild(d), s.appendChild(u), s.appendChild(b), c.appendChild(s), n.appendChild(a), n.appendChild(c), document.head.appendChild(e), document.body.appendChild(t), t.appendChild(n)
+    f.className = "footer-text", f.textContent = "আমরা সকাল ১০টা থেকে রাত ১০টা পর্যন্ত সেবা দিয়ে থাকি।", b.appendChild(f), s.appendChild(i), s.appendChild(r), s.appendChild(d), s.appendChild(u), s.appendChild(b), c.appendChild(s), n.appendChild(a), n.appendChild(c), document.head.appendChild(e), document.body.appendChild(t), t.appendChild(n)
 }();
 
 $(document).ready(function() {
