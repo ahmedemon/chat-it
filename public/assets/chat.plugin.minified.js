@@ -23,7 +23,7 @@
     var p = document.createElement("p");
     p.className = "chatbox-greetings", p.innerHTML = 'আমাদের ওয়েবসাইট পরিদর্শন করার জন্য ধন্যবাদ.';
     var h = document.createElement("p");
-    h.className = "chatbox-introduction", h.innerHTML = '<a href="/">' + document.location.host + "</a> সম্পর্কে কোন প্রশ্ন থাকলে?";
+    h.className = "chatbox-introduction", h.innerHTML = '<a href="javascript:;">' + document.location.host + "</a> সম্পর্কে কোন প্রশ্ন থাকলে?";
     var m = document.createElement("div");
     m.className = "chatbox-button-box";
     var g = document.createElement("a");

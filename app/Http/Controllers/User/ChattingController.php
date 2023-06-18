@@ -20,7 +20,7 @@ class ChattingController extends Controller
         $data->user_id = $auth->id;
         $data->conversation_id = $conversation->id;
         $data->type = 'send';
-        $data->site = $conversation->from_url;
+        $data->site = $conversation->from_url ?? '';
         if ($text == null) {
             $this->validate(request(), [
                 'image' => 'required'

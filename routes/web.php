@@ -29,6 +29,10 @@ Route::get('/chat-box', function () {
     return view('chatbox');
 });
 
+Route::get('/fcm-check', function () {
+    return view('fcm');
+});
+
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');

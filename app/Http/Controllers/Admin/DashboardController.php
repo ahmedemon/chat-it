@@ -9,6 +9,7 @@ use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class DashboardController extends Controller
@@ -62,7 +63,8 @@ class DashboardController extends Controller
 
     public function getInboxes()
     {
-        $data = Conversation::with('messages')->orderBy('updated_at', 'desc')->get();
+        $id = Auth::guard('admin')->user()->id;
+        $data = Conversation::where('admin_id', $id)->with('messages')->orderBy('updated_at', 'desc')->get();
         return response()->json($data);
     }
 

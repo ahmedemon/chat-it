@@ -1,139 +1,34 @@
-        <div class="header-outer">
-            <div class="header">
-                <a id="mobile_btn" class="mobile_btn float-left" href="#sidebar"><i class="fas fa-bars" aria-hidden="true"></i></a>
-                <a id="toggle_btn" class="float-left" href="javascript:void(0);">
-                    <img src="{{ asset('user/img/sidebar/icon-21.png') }}" alt="">
+<div class="border-bottom d-flex align-items-center justify-content-between" style="height: 6vh;">
+    <div class="d-flex align-items-center">
+        <img src="{{ Auth::guard('admin')->user()->profile_logo ? asset('storage/admin/' . Auth::guard('admin')->user()->profile_logo) : asset('assets/soft-favicon-logo.png') }}" height="35" width="35" class="ms-2 rounded-circle border" alt="">
+        <span class="ms-3">{{ Auth::guard('admin')->user()->name }}</span>
+    </div>
+    <div class="me-4">
+        <ul class="navbar-nav ms-auto flex-row">
+            <li class="nav-item dropdown">
+                <a id="navbarDropdown" class="btn btn-sm btn-outline-dark px-1 ms-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                    <i class="fas fa-chevron-circle-down" style="font-size: 2.5vh;"></i>
                 </a>
 
-                <ul class="nav float-left">
-                    <li>
-                        <div class="top-nav-search">
-                            <a href="javascript:void(0);" class="responsive-search">
-                                <i class="fa fa-search"></i>
-                            </a>
-                            <form action="https://preadmin-lite.dreamguystech.com/school/light/search.html">
-                                <input class="form-control" type="text" placeholder="Search here">
-                                <button class="btn" type="submit"><i class="fa fa-search"></i></button>
-                            </form>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="index.html" class="mobile-logo d-md-block d-lg-none d-block"><img src="{{ asset('user/img/logo1.png') }}" alt="" width="30" height="30"></a>
-                    </li>
-                </ul>
+                <div class="dropdown-menu dropdown-menu-end py-0 rounded-0" aria-labelledby="navbarDropdown">
+                    <a class="btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.index') }}">
+                        {{ __('Home') }}
+                    </a>
+                    <a class="btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.profile.index') }}">
+                        {{ __('Profile') }}
+                    </a>
+                    <a class="btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        {{ __('Logout') }}
+                    </a>
 
-                <ul class="nav user-menu float-right">
-                    <li class="nav-item dropdown d-none d-sm-block">
-                        <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                            <img src="{{ asset('user/img/sidebar/icon-22.png') }}" alt="">
-                        </a>
-                        <div class="dropdown-menu notifications">
-                            <div class="topnav-dropdown-header">
-                                <span>Notifications</span>
-                            </div>
-                            <div class="drop-scroll">
-                                <ul class="notification-list">
-                                    <li class="notification-message">
-                                        <a href="activities.html">
-                                            <div class="media">
-                                                <span class="avatar">
-                                                    <img alt="John Doe" src="{{ asset('user/img/user-06.jpg') }}" class="img-fluid rounded-circle">
-                                                </span>
-                                                <div class="media-body">
-                                                    <p class="noti-details"><span class="noti-title">John Doe</span> is now following you </p>
-                                                    <p class="noti-time"><span class="notification-time">4 mins ago</span></p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li class="notification-message">
-                                        <a href="activities.html">
-                                            <div class="media">
-                                                <span class="avatar">T</span>
-                                                <div class="media-body">
-                                                    <p class="noti-details"><span class="noti-title">Tarah Shropshire</span> sent you a message.</p>
-                                                    <p class="noti-time"><span class="notification-time">6 mins ago</span></p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li class="notification-message">
-                                        <a href="activities.html">
-                                            <div class="media">
-                                                <span class="avatar">L</span>
-                                                <div class="media-body">
-                                                    <p class="noti-details"><span class="noti-title">Misty Tison</span> like your photo.</p>
-                                                    <p class="noti-time"><span class="notification-time">8 mins ago</span></p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li class="notification-message">
-                                        <a href="activities.html">
-                                            <div class="media">
-                                                <span class="avatar">G</span>
-                                                <div class="media-body">
-                                                    <p class="noti-details"><span class="noti-title">Rolland Webber</span> booking appoinment for meeting.</p>
-                                                    <p class="noti-time"><span class="notification-time">12 mins ago</span></p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li class="notification-message">
-                                        <a href="activities.html">
-                                            <div class="media">
-                                                <span class="avatar">T</span>
-                                                <div class="media-body">
-                                                    <p class="noti-details"><span class="noti-title">Bernardo Galaviz</span> like your photo.</p>
-                                                    <p class="noti-time"><span class="notification-time">2 days ago</span></p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="topnav-dropdown-footer">
-                                <a href="activities.html">View all Notifications</a>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown d-none d-sm-block">
-                        <a href="javascript:void(0);" id="open_msg_box" class="hasnotifications nav-link"><img src="{{ asset('user/img/sidebar/icon-23.png') }}" alt=""> </a>
-                    </li>
-                    <li class="nav-item dropdown has-arrow">
-                        <a href="#" class=" nav-link user-link" data-toggle="dropdown">
-                            <span class="user-img"><img class="rounded-circle" src="{{ asset('user/img/user.jpg') }}" width="30" alt="Admin">
-                                <span class="status online"></span></span>
-                            <span>{{ Auth::guard('admin')->user()->name }}</span>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="profile.html">My Profile</a>
-                            <a class="dropdown-item" href="edit-profile.html">Edit Profile</a>
-                            <a class="dropdown-item" href="settings.html">Settings</a>
-                            <a class="dropdown-item" href="{{ route('admin.logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                {{ __('Logout') }}
-                            </a>
-
-                            <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
-                                @csrf
-                            </form>
-                        </div>
-                    </li>
-                </ul>
-                <div class="dropdown mobile-user-menu float-right">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="profile.html">My Profile</a>
-                        <a class="dropdown-item" href="edit-profile.html">Edit Profile</a>
-                        <a class="dropdown-item" href="settings.html">Settings</a>
-                        <a class="dropdown-item" href="{{ route('admin.logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            {{ __('Logout') }}
-                        </a>
-
-                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-                    </div>
+                    <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
                 </div>
-            </div>
-        </div>
+            </li>
+            <li class="nav-item dropdown">
+                <button class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1 toggle"><i class="fas fa-sliders-h" style="font-size: 2.5vh;"></i></button>
+            </li>
+        </ul>
+    </div>
+</div>

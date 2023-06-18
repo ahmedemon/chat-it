@@ -15,7 +15,7 @@ class ApiController extends Controller
 {
     public function index()
     {
-        $data = Conversation::with('messages')->get();
+        $data = Conversation::with('messages')->latest()->get();
         return response()->json($data);
     }
 

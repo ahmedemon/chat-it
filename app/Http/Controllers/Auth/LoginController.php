@@ -32,7 +32,8 @@ class LoginController extends Controller
         $id = Auth::user()->id;
         $user = User::findOrFail($id);
         $fromUrl = $user->conversation->from_url ?? 'softhostit.com';
-        $homeRoute = route('web');
+        $admin_id = $user->conversation->admin_id;
+        $homeRoute = route('web', $admin_id);
         $this->guard()->logout();
 
         $request->session()->invalidate();

@@ -1,61 +1,13 @@
 @extends('layouts.admin.app', ['pageTitle' => $pageTitle])
-<style>
-    /* width */
-    ::-webkit-scrollbar {
-        width: 5px;
-    }
 
-    /* Track */
-    ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-        background: #888;
-    }
-
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-
-    @media screen and (min-width: 300px) {
-        #main_container {
-            overflow: hidden;
-        }
-    }
-</style>
 @section('content')
     <div class="row justify-content-center mx-auto align-items-center" id="main_container">
         <div class="col-12">
             <div class="row bg-white">
                 <div class="col-12 col-md-3 px-0 border-end d-lg-block d-none bg-white sticky-sm-top mb-lg-0 mb-5" id="sidebar">
-                    <div class="border-bottom d-flex align-items-center justify-content-between" style="height: 6vh;">
-                        <img src="{{ asset('assets/soft-favicon-logo.png') }}" height="35" width="35" class="ms-2 rounded-circle border" alt="">
-                        <div class="me-4">
-                            <ul class="navbar-nav ms-auto flex-row">
-                                <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="btn btn-sm btn-outline-dark px-1 ms-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        <i class="fas fa-chevron-circle-down" style="font-size: 2.5vh;"></i>
-                                    </a>
-
-                                    <div class="dropdown-menu dropdown-menu-end py-0 rounded-0" aria-labelledby="navbarDropdown">
-                                        <a class="btn btn-block w-100 rounded-0" href="{{ route('admin.logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                            {{ __('Logout') }}
-                                        </a>
-
-                                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
-                                            @csrf
-                                        </form>
-                                    </div>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <button class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1 toggle"><i class="fas fa-sliders-h" style="font-size: 2.5vh;"></i></button>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    <!-- left header -->
+                    @include('layouts.admin.header')
+                    <!-- left header -->
                     <div class="border-0 px-0" style="height: 94vh; overflow-y: scroll;" id="inboxes">
                     </div>
                 </div>
@@ -414,7 +366,7 @@
                                 data = data + "</span>"
                             }
                             data = data + "</div>"
-                            data = data + "<img src='{{ asset('assets/soft-favicon-logo.png') }}' width='30' height='30' alt='' class='ms-2 rounded-circle border'>"
+                            data = data + "<img src='{{ Auth::guard('admin')->user()->profile_logo ? asset('storage/admin/' . Auth::guard('admin')->user()->profile_logo) : asset('assets/soft-favicon-logo.png') }}' width='30' height='30' alt='' class='ms-2 rounded-circle border'>"
                             data = data + "</div>"
                         }
                         data = data + "</div>"

@@ -45,6 +45,20 @@
         }
     </style>
 </head>
+@php
+    $url = $_SERVER['REQUEST_URI'];
+    $queryParams = explode('?', $url);
+    $queryAdminId = $queryParams[1];
+
+    $admin = App\Models\Admin::where('id', $queryAdminId)->first();
+    if ($admin != null) {
+        $admin_id = $admin->id;
+    } else {
+        $admin_id = 1;
+    }
+
+    $setting = App\Models\Setting::where('admin_id', $admin_id)->first();
+@endphp
 
 <body id="body">
     <div class="row justify-content-center mx-auto align-items-center" style="height: 100vh;">
@@ -54,11 +68,11 @@
                     <div class="row mx-auto border-start">
                         <div class="col-md-12 shadow-sm d-flex justify-content-between align-items-center" id="header" style="height: 5vh;">
                             <div class="d-flex">
-                                <img src="{{ asset('assets/soft-favicon-logo.png') }}" class="rounded-circle" style="height: 4vh;" class="" alt="">
+                                <img src="{{ $admin->profile_logo ? asset('storage/admin/' . $admin->profile_logo) : asset('assets/soft-favicon-logo.png') }}" class="rounded-circle" style="height: 4vh;" class="" alt="">
                                 <div class="d-flex align-items-center ms-2">
                                     <div>
                                         <h5 class="text-center my-0" style="font-family: 'Courgette', cursive; font-weight: bold; font-size: 16px;">
-                                            <a class="text-decoration-none" target="_blank" href="https://softhostit.com">Soft Host It</a>
+                                            <a class="text-decoration-none" target="_blank" href="https://softhostit.com">{{ $setting->link_title ?? 'Soft Host It' }}</a>
                                         </h5>
                                         <h5 class="text-start text-success my-0" style="font-size: 9px;">
                                             Active Now
@@ -109,7 +123,7 @@
                 <div class="d-flex justify-content-center mb-3">
                     <marquee>
                         <h3 id="sulymanLipi">
-                            <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">সফট হোস্ট আইটি</a>’র লাইভ সাপোর্ট সেন্টারে আপনাকে স্বাগতম।
+                            <a class="text-decoration-none" href="{{ $setting->site_link ?? 'https://softhostit.com' }}" target="_blank">{{ $setting->link_title ?? 'সফট হোস্ট আইটি' }}</a> {{ $setting->site_greetings ?? '’র লাইভ সাপোর্ট সেন্টারে আপনাকে স্বাগতম' }}।
                         </h3>
                     </marquee>
                 </div>
@@ -117,10 +131,10 @@
                     <div class="row mb-3 mx-auto">
                         <div class="col-md-12">
                             <div class="d-flex justify-content-center mt-3">
-                                <img src="https://support.softhostit.com/public/assets/chat-head.png" height="150" alt="">
+                                <img src="{{ $setting->site_logo ? asset('storage/admin/' . $setting->site_logo) : asset('assets/chat-head.png') }}" height="150" alt="">
                             </div>
                             <h4 class="text-center my-3" style="font-family: 'Courgette', cursive; font-weight: bold;">
-                                Welcome To <a class="text-decoration-none" href="https://softhostit.com/" target="_blank">Soft Host IT</a> Live Support Center
+                                Welcome To <a class="text-decoration-none" href="{{ $setting->site_link ?? 'https://softhostit.com' }}" target="_blank">{{ $setting->link_title ?? 'Soft Host It' }}</a> Live Support Center
                             </h4>
                         </div>
                         <div class="col-md-12 mb-2">
@@ -131,6 +145,7 @@
 
                         <div class="col-md-12">
                             <input id="device_id" type="hidden" class="form-control mb-3" name="device_id">
+                            <input id="admin_id" type="hidden" class="form-control mb-3" name="admin_id" value="{{ $admin_id }}">
                         </div>
 
                         <div class="col-md-12 mb-2">
@@ -146,7 +161,13 @@
                         </div>
 
                         <div class="col-md-12">
-                            <input type="hidden" id="from_url" type="from_url" value="{{ Crypt::encrypt($_SERVER['QUERY_STRING']) }}">
+                            @php
+                                $queryString = $_SERVER['QUERY_STRING'];
+                                $queryString = ltrim($queryString, '?');
+                                $params = explode('?', $queryString);
+                                $fromUrl = end($params);
+                            @endphp
+                            <input type="hidden" id="from_url" type="from_url" value="{{ Crypt::encrypt($fromUrl) }}">
                             <button type="submit" class="btn btn-primary w-100 mt-3" onclick="initial();">{{ __('Start Chat') }}</button>
                         </div>
 
@@ -205,6 +226,7 @@
             if (event.keyCode === 13) { // Check if Enter key is pressed
                 event.preventDefault(); // Prevent default behavior
                 $("#sendBtn").click();
+                sendNotification();
             }
         });
 
@@ -229,6 +251,8 @@
     function initial() {
         var name = $('#name').val();
         var phone = $('#phone').val();
+        var admin_id = $('#admin_id').val();
+        var device_id = $('#device_id').val();
         var from_url = $('#from_url').val();
         var email = $('#email').val();
         var password = email.split('@')[0];
@@ -262,6 +286,8 @@
             dataType: "json",
             data: {
                 name: name,
+                device_id: device_id,
+                admin_id: admin_id,
                 phone: phone,
                 from_url: from_url,
                 email: email,
@@ -272,8 +298,8 @@
             success: function(success) {
                 $("#chat-box-container").removeClass('d-none');
                 $("#login-register-container").addClass('d-none');
-                refreshSection();
                 getAllMessages();
+                refreshSection();
             },
             error: function(error) {
                 var $errors = error.responseJSON.errors;
@@ -298,9 +324,16 @@
     // add data using ajax
 
     // refresh the section
+
+    // get url first query parameter
+    // const url = window.location.href;
+    // const queryParams = url.split('?');
+    // const firstParam = queryParams[1];
+    // get url first query parameter
+
     function refreshSection() {
         // Make an AJAX request to fetch the updated content
-        fetch('{{ route('web') }}')
+        fetch(window.location.href)
             .then(response => response.text())
             .then(data => {
                 // Update the content of the section with the fetched data
@@ -345,7 +378,7 @@
                         data = data + "</div>"
                     } else {
                         data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
-                        data = data + "<img src='{{ asset('assets/soft-favicon-logo.png') }}' width='30' height='30' alt='' class='rounded-circle border me-2'>"
+                        data = data + "<img src='{{ $admin->profile_logo ? asset('storage/admin/' . $admin->profile_logo) : asset('assets/soft-favicon-logo.png') }}' width='30' height='30' alt='' class='rounded-circle border me-2'>"
                         if (value.check_image == 1) {
                             data = data + "<div class='text-start'>"
                             data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
@@ -444,3 +477,6 @@
     }
     // sending data
 </script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
+<script src="{{ asset('assets/fcm-configuration.js') }}"></script>
