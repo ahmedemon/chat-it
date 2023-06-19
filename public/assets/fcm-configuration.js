@@ -13,7 +13,8 @@ firebase.initializeApp(firebaseConfig);
 
 // Initialize Firebase messaging
 const messaging = firebase.messaging();
-var serverKey = "key=AAAAWPTEeLI:APA91bFrXmdxu5T8eA6wZ1mPR797Kw1Rs9ae58rLPfgoWcoSxmO_TxgnP8abk2L3r86UBDGGHPkMGwmTsqWSH0romuMocuC7amCP-lr1d_XnKo46_TpNm5AsYfBax9xCGtNz-IbH5VQm";
+var serverKey =
+    "key=AAAAWPTEeLI:APA91bFrXmdxu5T8eA6wZ1mPR797Kw1Rs9ae58rLPfgoWcoSxmO_TxgnP8abk2L3r86UBDGGHPkMGwmTsqWSH0romuMocuC7amCP-lr1d_XnKo46_TpNm5AsYfBax9xCGtNz-IbH5VQm";
 messaging
     .requestPermission()
     .then(function () {
@@ -48,12 +49,12 @@ function sendNotification() {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
+                        to: "/topics/all",
                         notification: {
                             title: title,
                             body: options.body,
-                            icon: options.icon,
+                            image: options.icon,
                         },
-                        to: currentToken,
                     }),
                 })
                     .then(function (response) {

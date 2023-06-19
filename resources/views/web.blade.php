@@ -49,14 +49,14 @@
     $url = $_SERVER['REQUEST_URI'];
     $queryParams = explode('?', $url);
     $queryAdminId = $queryParams[1];
-
+    
     $admin = App\Models\Admin::where('id', $queryAdminId)->first();
     if ($admin != null) {
         $admin_id = $admin->id;
     } else {
         $admin_id = 1;
     }
-
+    
     $setting = App\Models\Setting::where('admin_id', $admin_id)->first();
 @endphp
 
@@ -184,6 +184,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('assets/moment.js') }}"></script>
 <script src="{{ asset('assets/moment.timezone.js') }}"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const fileInput = document.getElementById('attachmentFile');
@@ -473,10 +474,32 @@
             error: function(error) {
                 var $errors = error.responseJSON.errors;
             }
-        })
+        });
+        @auth()
+            var authName = "{{ Auth::user()->name }}";
+        @endauth
+        var serverKey = "key=AAAAWPTEeLI:APA91bFrXmdxu5T8eA6wZ1mPR797Kw1Rs9ae58rLPfgoWcoSxmO_TxgnP8abk2L3r86UBDGGHPkMGwmTsqWSH0romuMocuC7amCP-lr1d_XnKo46_TpNm5AsYfBax9xCGtNz-IbH5VQm";
+        $.ajax({
+            url: "https://fcm.googleapis.com/fcm/send",
+            method: "POST",
+            headers: {
+                Authorization: serverKey,
+                "Content-Type": "application/json",
+            },
+            data: JSON.stringify({
+                to: '/topics/all',
+                notification: {
+                    title: authName,
+                    body: message_body,
+                    image: "https://support.softhostit.com/public/assets/chat-head.png",
+                },
+            }),
+            success: function(response) {},
+            error: function(error) {
+                console.log("Failed to send notification:", error);
+            }
+        });
+
     }
     // sending data
 </script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
-<script src="{{ asset('assets/fcm-configuration.js') }}"></script>

@@ -19,6 +19,12 @@ class ApiController extends Controller
         return response()->json($data);
     }
 
+    public function getUserById($id)
+    {
+        $data = Conversation::where('user_id', $id)->with('messages')->latest()->get();
+        return response()->json($data);
+    }
+
     public function send(Request $request)
     {
         $text = $request->content;
