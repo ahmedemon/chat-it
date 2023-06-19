@@ -19,13 +19,8 @@
                         </div>
                         <div class="me-lg-4 me-2">
                             <ul class="navbar-nav ms-auto flex-row">
-                                <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="btn btn-sm btn-outline-dark px-1 ms-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        <i class="fas fa-envelope-open-text" style="font-size: 2.5vh;"></i>
-                                    </a>
+                                <li class="nav-item dropdown" id="emailMenuButton">
 
-                                    <div class="dropdown-menu dropdown-menu-end py-0 rounded-0" id="inboxTrippleDot" aria-labelledby="navbarDropdown">
-                                    </div>
                                 </li>
                                 <div id="conversationsAction"></div>
                                 <li class="nav-item dropdown">
@@ -45,7 +40,7 @@
                                 </p>
                                 <div class="col-md-12 px-3 my-0" id="message_box">
                                 </div>
-                                <div class="text-center position-fixed mb-5" style="bottom: 70;right: 20;">
+                                <div class="text-center position-fixed mb-5" style="bottom: 70px; right: 20px;">
                                     <span id="scrollBottom" class="btn btn-info p-0 rounded-circle"><i class="fas fa-arrow-alt-circle-down text-white rounded-circle" style="font-size: 30px; color: transparent;"></i></span>
                                 </div>
                                 <div class="input-group p-3 sticky-bottom bg-white shadow" id="input_box">
@@ -422,11 +417,17 @@
         // fetching all data using ajax
         function sendEmail(id) {
             var inbox_id = id;
+            var email_subject = $("#email_subject").val();
+            var email_message = $("#email_message").val();
             var sendEmailRoute = "{{ route('admin.send.email', ':id') }}";
             sendEmailRoute = sendEmailRoute.replace(':id', inbox_id);
             $.ajax({
                 type: "GET",
                 dataType: "JSON",
+                data: {
+                    email_subject: email_subject,
+                    email_message: email_message
+                },
                 url: sendEmailRoute,
                 success: function(messages) {
                     Swal.fire({
@@ -434,6 +435,7 @@
                         title: 'Email Sent!',
                         text: 'Email has been send successfully!.',
                     });
+                    $('.email-modal').modal('hide');
                 }
             });
         }
@@ -453,11 +455,38 @@
                     $("#sidebar").toggleClass('d-none');
                     var conversation_id = $("#conversation_id").val(id);
 
-                    var sendEmailRoute = "{{ route('admin.send.email', ':id') }}";
-                    sendEmailRoute = sendEmailRoute.replace(':id', data_id);
-                    var sendEmailButton = "<a class='dropdown-item' href='" + sendEmailRoute + "'>Send Email</a>"
-                    var sendEmailButton = "<a class='dropdown-item' href='javascript:;' onclick='sendEmail(" + data_id + ")'>Send Email</a>"
-                    $("#inboxTrippleDot").html(sendEmailButton);
+                    var email = ''
+                    email = email + '<a id="navbarDropdown" class="btn btn-sm btn-outline-dark px-1 ms-1" href="javascript:;" data-bs-toggle="modal" data-bs-target="#EmailModal' + data_id + '">'
+                    email = email + '<i class="fas fa-envelope" style="font-size: 2.5vh;"></i>'
+                    email = email + '</a>'
+
+                    email = email + '<div class="modal email-modal fade" id="EmailModal' + data_id + '" tabindex="-1" aria-labelledby="EmailModalLabel' + data_id + '" aria-hidden="true">'
+                    email = email + '<div class="modal-dialog modal-dialog-centered">'
+                    email = email + '<div class="modal-content">'
+                    email = email + '<div class="modal-header py-2">'
+                    email = email + '<h4 class="mb-0">Send Email</h4>'
+                    email = email + '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'
+                    email = email + '</div>'
+                    email = email + '<div class="modal-body">'
+                    email = email + '<label for="email_subject">Subject</label>'
+                    email = email + '<div class="input-group">'
+                    email = email + '<input type="text" name="email_subject" id="email_subject" class="form-control" placeholder="Type here">'
+                    email = email + '</div>'
+                    email = email + '<br>'
+                    email = email + '<label for="email_message">Body</label>'
+                    email = email + '<div class="input-group">'
+                    email = email + '<textarea name="message" id="email_message" rows="5" class="form-control rounded-0" placeholder="Type here"></textarea>'
+                    email = email + '</div>'
+                    email = email + '</div>'
+                    email = email + '<div class="modal-footer justify-content-between">'
+                    email = email + '<button type="button" class="btn btn-sm btn-dark" data-bs-dismiss="modal">Close</button>'
+                    email = email + '<button type="button" id="sendEmail" onclick="sendEmail(' + data_id + ')" class="btn btn-sm btn-success">Send</button>'
+                    email = email + '</div>'
+                    email = email + '</div>'
+                    email = email + '</div>'
+                    email = email + '</div>'
+
+                    $("#emailMenuButton").html(email);
                     $("#sidebar").addClass('d-none');
                     fetchData();
                 }

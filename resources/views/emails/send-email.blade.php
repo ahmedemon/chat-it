@@ -1,12 +1,12 @@
 @component('mail::layout')
 @slot('header')
-@component('mail::header', ['url' => route('web') . '/?'. $conversation->from_url])
-{{ $user->name }} - Your live assistant is active now.
+@component('mail::header', ['url' => route('web') . '/?' . $conversation->from_url])
+{{ $subject }}
 @endcomponent
 @endslot
-Hi {{ $user->name }}! We are active now, How can we help you?
+Hi {{ $user->name }}! {{ $message }}
 
-@component('mail::button', ['url' => route('web') . '/?'. $conversation->from_url])
+@component('mail::button', ['url' => route('web') . '?' . $conversation->admin_id . '?' . $conversation->from_url])
 GoTo Inbox
 @endcomponent
 

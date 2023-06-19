@@ -81,9 +81,11 @@ class DashboardController extends Controller
 
     public function sendEmail($id)
     {
+        $subject = request()->email_subject;
+        $message = request()->email_message;
         $conversation = Conversation::findOrFail($id);
         $user = User::where('id', $conversation->user_id)->first();
-        Mail::to($user->email)->send(new SendEmail($user, $conversation));
+        Mail::to($user->email)->send(new SendEmail($user, $conversation, $message, $subject));
         return response()->json(['success' => true]);
     }
 }
