@@ -80,9 +80,10 @@ class AdminLoginController extends Controller
 
     public function logout(Request $request)
     {
+        $panel_id = Auth::guard('admin')->user()->id;
         $this->guard('admin')->logout();
         // $request->session()->invalidate();
         // alert('Hope you`ll back soon!', '', 'info');
-        return $this->loggedOut($request) ?: redirect()->route('admin.login.view');
+        return $this->loggedOut($request) ?: redirect()->route('admin.login.view', 'panel=' . $panel_id);
     }
 }

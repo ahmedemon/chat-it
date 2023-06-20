@@ -1,3 +1,6 @@
+@php
+    $setting = App\Models\Setting::where('admin_id', Auth::guard('admin')->user()->id)->first();
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,8 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" type="image/x-icon" href="https://support.softhostit.com/public/assets/chat-head.png">
-    <title>Chat It</title>
+    <link rel="icon" type="image/x-icon" href="{{ $setting->site_logo ? asset('storage/admin/' . $setting->site_logo) : asset('assets/chat-head.png') }}">
+    <title>{{ config('app.name') }} - {{ $setting->link_title ?? 'Dashboard' }}</title>
     <link rel="stylesheet" href="{{ asset('assets/bootstrap.min.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

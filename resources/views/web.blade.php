@@ -1,3 +1,17 @@
+@php
+    $url = $_SERVER['REQUEST_URI'];
+    $queryParams = explode('?', $url);
+    $queryAdminId = $queryParams[1];
+    
+    $admin = App\Models\Admin::where('id', $queryAdminId)->first();
+    if ($admin != null) {
+        $admin_id = $admin->id;
+    } else {
+        $admin_id = 1;
+    }
+    
+    $setting = App\Models\Setting::where('admin_id', $admin_id)->first();
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +20,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Chat It</title>
+    <title>{{ config('app.name') }} - {{ $setting->link_title ?? 'Dashboard' }}</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ $setting->site_logo ? asset('storage/admin/' . $setting->site_logo) : asset('assets/chat-head.png') }}">
     <link rel="stylesheet" href="{{ asset('assets/bootstrap.min.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,20 +60,6 @@
         }
     </style>
 </head>
-@php
-    $url = $_SERVER['REQUEST_URI'];
-    $queryParams = explode('?', $url);
-    $queryAdminId = $queryParams[1];
-    
-    $admin = App\Models\Admin::where('id', $queryAdminId)->first();
-    if ($admin != null) {
-        $admin_id = $admin->id;
-    } else {
-        $admin_id = 1;
-    }
-    
-    $setting = App\Models\Setting::where('admin_id', $admin_id)->first();
-@endphp
 
 <body id="body">
     <div class="row justify-content-center mx-auto align-items-center" style="height: 100vh;">
@@ -139,7 +140,7 @@
                         </div>
                         <div class="col-md-12 mb-2">
                             <label for="name" class="text-md-end">{{ __('Name') }}</label>
-                            <input id="name" type="name" class="form-control" name="name" value="{{ old('name') }}" required placeholder="Name">
+                            <input id="name" type="name" class="form-control" name="name" value="{{ old('name', $_GET['name'] ?? '') }}" required placeholder="Name">
                             <span class="text-danger small" id="name_Error"></span>
                         </div>
 
@@ -150,24 +151,18 @@
 
                         <div class="col-md-12 mb-2">
                             <label for="email" class="text-md-end">{{ __('Email Address') }}</label>
-                            <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required placeholder="Email address">
+                            <input id="email" type="email" class="form-control" name="email" value="{{ old('email', $_GET['email'] ?? '') }}" required placeholder="Email address">
                             <span class="text-danger small" id="email_Error"></span>
                         </div>
 
                         <div class="col-md-12 mb-2">
                             <label for="phone" class="text-md-end">{{ __('Phone') }}</label>
-                            <input id="phone" type="number" class="form-control" name="phone" value="{{ old('phone') }}" required placeholder="Phone Number">
+                            <input id="phone" type="number" class="form-control" name="phone" value="{{ old('phone', $_GET['phone'] ?? '') }}" required placeholder="Phone Number">
                             <span class="text-danger small" id="phone_Error"></span>
                         </div>
 
                         <div class="col-md-12">
-                            @php
-                                $queryString = $_SERVER['QUERY_STRING'];
-                                $queryString = ltrim($queryString, '?');
-                                $params = explode('?', $queryString);
-                                $fromUrl = end($params);
-                            @endphp
-                            <input type="hidden" id="from_url" type="from_url" value="{{ Crypt::encrypt($fromUrl) }}">
+                            <input type="hidden" id="from_url" type="from_url" value="{{ Crypt::encrypt($_GET['site']) }}">
                             <button type="submit" class="btn btn-primary w-100 mt-3" onclick="initial();">{{ __('Start Chat') }}</button>
                         </div>
 
@@ -227,7 +222,6 @@
             if (event.keyCode === 13) { // Check if Enter key is pressed
                 event.preventDefault(); // Prevent default behavior
                 $("#sendBtn").click();
-                sendNotification();
             }
         });
 

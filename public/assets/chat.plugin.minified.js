@@ -27,7 +27,7 @@
     var m = document.createElement("div");
     m.className = "chatbox-button-box";
     var g = document.createElement("a");
-    g.className = "chatbox-chat-button", g.href = "https://support.softhostit.com/web?" + document.location.host, g.target = "_blank", g.textContent = "এখানে ক্লিক করুন", m.appendChild(g), d.appendChild(p), d.appendChild(h), d.appendChild(m);
+    g.className = "chatbox-chat-button", g.href = "https://support.softhostit.com/web?1?&site=" + document.location.host, g.target = "_blank", g.textContent = "এখানে ক্লিক করুন", m.appendChild(g), d.appendChild(p), d.appendChild(h), d.appendChild(m);
     var u = document.createElement("hr");
     var b = document.createElement("div");
     b.className = "chatbox-footer";

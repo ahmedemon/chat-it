@@ -17,7 +17,7 @@
                     <a class="btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.profile.index') }}">
                         {{ __('Profile') }}
                     </a>
-                    <a class="btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <a class="btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.logout') }}?panel={{ Auth::guard('admin')->user()->id }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         {{ __('Logout') }}
                     </a>
 
