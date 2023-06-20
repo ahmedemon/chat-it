@@ -471,6 +471,7 @@
         });
         @auth()
             var authName = "{{ Auth::user()->name }}";
+            var authId = "{{ Auth::user()->id }}";
         @endauth
         var serverKey = "key=AAAAWPTEeLI:APA91bFrXmdxu5T8eA6wZ1mPR797Kw1Rs9ae58rLPfgoWcoSxmO_TxgnP8abk2L3r86UBDGGHPkMGwmTsqWSH0romuMocuC7amCP-lr1d_XnKo46_TpNm5AsYfBax9xCGtNz-IbH5VQm";
         $.ajax({
@@ -487,6 +488,15 @@
                     body: message_body,
                     image: "https://support.softhostit.com/public/assets/chat-head.png",
                 },
+                data: {
+                    title: authName,
+                    body: message_body,
+                    sound: "default",
+                    type: "new",
+                    user_id: authId,
+                    from_url: document.location.host,
+                    conversation_id: conversation_id,
+                }
             }),
             success: function(response) {},
             error: function(error) {
