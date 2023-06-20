@@ -73,7 +73,7 @@
                                 <div class="d-flex align-items-center ms-2">
                                     <div>
                                         <h5 class="text-center my-0" style="font-family: 'Courgette', cursive; font-weight: bold; font-size: 16px;">
-                                            <a class="text-decoration-none" target="_blank" href="https://softhostit.com">{{ $setting->link_title ?? 'Soft Host It' }}</a>
+                                            <a class="text-decoration-none" target="_blank" href="{{ $setting->site_link ?? 'https://softhostit.com' }}">{{ $setting->link_title ?? 'Soft Host It' }}</a>
                                         </h5>
                                         <h5 class="text-start text-success my-0" style="font-size: 9px;">
                                             Active Now
@@ -104,7 +104,7 @@
                         <div id="scroll_bottom">
                             <div class="col-md-12 px-1 my-0" id="message_box">
                                 <div class="d-flex justify-content-center align-items-center" style="height: 100%; width: 100%;">
-                                    Welcome to the live support center of <a href="https://softhostit.com/" target="_blank" class="ms-1 text-decoration-none">Soft Host It</a>
+                                    Welcome to the live support center of <a href="{{ $setting->site_link ?? 'https://softhostit.com' }}" target="_blank" class="ms-1 text-decoration-none">{{ $setting->link_title ?? 'Soft Host It' }}</a>
                                 </div>
                             </div>
                         </div>
@@ -140,7 +140,7 @@
                         </div>
                         <div class="col-md-12 mb-2">
                             <label for="name" class="text-md-end">{{ __('Name') }}</label>
-                            <input id="name" type="name" class="form-control" name="name" value="{{ old('name', $_GET['name'] ?? '') }}" required placeholder="Name">
+                            <input id="name" type="name" class="form-control" name="name" value="{{ old('name', $_GET['name'] ?? '') }}" {{ $_GET['name'] ? 'readonly' : '' }} required placeholder="Name">
                             <span class="text-danger small" id="name_Error"></span>
                         </div>
 
@@ -151,13 +151,13 @@
 
                         <div class="col-md-12 mb-2">
                             <label for="email" class="text-md-end">{{ __('Email Address') }}</label>
-                            <input id="email" type="email" class="form-control" name="email" value="{{ old('email', $_GET['email'] ?? '') }}" required placeholder="Email address">
+                            <input id="email" type="text" class="form-control" name="email" value="{{ old('email', $_GET['email'] ?? '') }}" {{ $_GET['email'] ? 'readonly' : '' }} required placeholder="Email address">
                             <span class="text-danger small" id="email_Error"></span>
                         </div>
 
                         <div class="col-md-12 mb-2">
                             <label for="phone" class="text-md-end">{{ __('Phone') }}</label>
-                            <input id="phone" type="number" class="form-control" name="phone" value="{{ old('phone', $_GET['phone'] ?? '') }}" required placeholder="Phone Number">
+                            <input id="phone" type="number" class="form-control" name="phone" value="{{ old('phone', $_GET['phone'] ?? '') }}" {{ $_GET['phone'] ? 'readonly' : '' }} required placeholder="Phone Number">
                             <span class="text-danger small" id="phone_Error"></span>
                         </div>
 

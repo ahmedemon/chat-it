@@ -16,14 +16,19 @@ class AjaxController extends Controller
     {
         $this->validate(request(), [
             'name' => 'required',
-            'email' => ['required', 'email'],
+            'email' => 'required',
             'phone' => 'required',
         ]);
+        $emailOrUserName = request()->email;
+        if (strpos($emailOrUserName, "@gmail.com") !== false) {
+            $email = $emailOrUserName;
+        } else {
+            $email = $emailOrUserName . "@gmail.com";
+        }
         $name = request()->name;
         $device_id = request()->device_id ?? '';
         $admin_id = request()->admin_id;
         $phone = request()->phone;
-        $email = request()->email;
         $from_url = Crypt::decrypt(request()->from_url) ?? '';
         $message = request()->message;
         $password = request()->password;
@@ -32,9 +37,11 @@ class AjaxController extends Controller
         $parts = explode('@', $email);
         $password = $parts[0];
         $password;
-
+        $credentials = request()->only('password');
+        $credentials['email'] = $email;
         if ($user > 0) {
-            $credentials = request()->only('email', 'password');
+            $credentials = request()->only('password');
+            $credentials['email'] = $email;
 
             // updating the url
             $user = User::where('email', $email)->first();
@@ -56,7 +63,8 @@ class AjaxController extends Controller
                 'show_password' => $password,
                 'email_verified_at' => now()
             ]);
-            $credentials = request()->only('email', 'password');
+            $credentials = request()->only('password');
+            $credentials['email'] = $email;
             Auth::attempt($credentials);
 
             $auth = Auth::user();

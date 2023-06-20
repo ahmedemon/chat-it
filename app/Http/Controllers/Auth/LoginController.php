@@ -31,6 +31,7 @@ class LoginController extends Controller
     {
         $id = Auth::user()->id;
         $user = User::findOrFail($id);
+        $username = substr($user->email, 0, strpos($user->email, '@'));
         $fromUrl = $user->conversation->from_url ?? 'softhostit.com';
         $admin_id = $user->conversation->admin_id;
         $homeRoute = route('web', $admin_id);
@@ -46,7 +47,7 @@ class LoginController extends Controller
 
         return $request->wantsJson()
             ? new JsonResponse([], 204)
-            : redirect()->to($homeRoute . '?' . $fromUrl);
+            : redirect()->to($homeRoute . '?&site=' . $fromUrl . '&name=' . $user->name . '&email=' . $username . '&phone=' . $user->phone . '');
     }
     use AuthenticatesUsers;
 

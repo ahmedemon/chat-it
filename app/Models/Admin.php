@@ -13,4 +13,9 @@ class Admin extends User
     protected $fillable = [
         'name', 'username', 'email', 'phone', 'address', 'domain', 'password', 'show_password', 'status', 'main_account', 'site_greetings', 'site_link', 'renewed_at', 'expired_at'
     ];
+
+    function setting()
+    {
+        return $this->hasOne(Setting::class, 'admin_id', 'id');
+    }
 }

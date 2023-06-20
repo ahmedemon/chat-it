@@ -66,7 +66,7 @@
                                         <button class="btn btn-sm d-lg-none btn-outline-dark px-1 ms-1 toggle"><i class="fas fa-sliders-h" style="font-size: 2.5vh;"></i></button>
                                     </div>
                                     <div class="text-center">
-                                        Welcome to the live support center <br> of <a href="https://softhostit.com/" target="_blank" class="ms-1 text-decoration-none">Soft Host It</a>
+                                        Welcome to the live support center <br> of <a href="{{ Auth::guard('admin')->user()->setting->site_link ?? 'https://softhostit.com/' }}" target="_blank" class="ms-1 text-decoration-none">{{ Auth::guard('admin')->user()->setting->link_title ?? 'Soft Host It' }}</a>
                                     </div>
                                 </div>
                             </div>

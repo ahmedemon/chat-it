@@ -32,7 +32,7 @@
                     </div>
                     <div class="form-group my-2">
                         <label>Password</label>
-                        <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" id="inputChoosePassword" value="admin" required placeholder="Type your password">
+                        <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" id="inputChoosePassword" required placeholder="Type your password">
                         @error('password')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
