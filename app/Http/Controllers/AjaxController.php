@@ -93,4 +93,11 @@ class AjaxController extends Controller
         $data = $conversation->messages;
         return response()->json($data);
     }
+
+    public function getNewMessage()
+    {
+        $totalMessage = Message::where('user_id', Auth::user()->id)->count();
+        $data = Message::where('user_id', Auth::user()->id)->latest()->first();
+        return response()->json([$data, $totalMessage]);
+    }
 }

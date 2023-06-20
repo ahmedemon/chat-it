@@ -38,7 +38,7 @@
         }
 
         #scroll_bottom {
-            height: 80vh;
+            height: 88vh;
             overflow-y: scroll;
             scroll-behavior: smooth;
         }
@@ -50,19 +50,35 @@
 
         @media screen and (min-width: 300px) and (max-width: 768px) {
             #scroll_bottom {
-                height: 90vh;
+                height: 83vh;
             }
 
             #header {
                 border-top: 0px solid gainsboro;
                 border-right: 0px solid gainsboro;
             }
+
+            #sendingGroup {
+                bottom: 0;
+                border-radius: 30px !important;
+                overflow: hidden;
+                border-left: 1px solid #ebeef0;
+                border-right: 1px solid #ebeef0;
+            }
+
+            #mainContainer {
+                height: auto !important;
+            }
+        }
+
+        #mainContainer {
+            height: 100vh;
         }
     </style>
 </head>
 
 <body id="body">
-    <div class="row justify-content-center mx-auto align-items-center" style="height: 100vh;">
+    <div class="row justify-content-center mx-auto align-items-center" id="mainContainer">
         <div class="col-md-4 col-12 px-0">
             @auth
                 <div class=" px-0 {{ auth()->check() ? '' : 'd-none' }}" id="chat-box-container">
@@ -107,16 +123,20 @@
                                     Welcome to the live support center of <a href="{{ $setting->site_link ?? 'https://softhostit.com' }}" target="_blank" class="ms-1 text-decoration-none">{{ $setting->link_title ?? 'Soft Host It' }}</a>
                                 </div>
                             </div>
+                            <div class="col-md-12 px-1 my-0" id="new_message_box">
+                            </div>
                         </div>
-                        <div class="input-group px-0" style="height: 5vh;">
-                            <input type="hidden" id="conversation_id" name="conversation_id" value="">
-                            <input type="hidden" id="total_message" name="total_message" value="">
-                            <a id="attachment" class="btn border d-flex align-items-center" href="javascript:;" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                <i class="fas fa-paperclip" style="font-size: 20px;"></i>
-                            </a>
-                            <input type="file" class="d-none" id="attachmentFile" name="image">
-                            <input type="text" name="message_body" id="message_body" class="form-control form-control-sm border-bottom border-top border-start border-end border-0 shadow-none" placeholder="Type Here...">
-                            <button class="btn btn-sm btn-primary rounded-0" id="sendBtn" onclick="sendMessage();">Send</button>
+                        <div class="d-flex px-lg-0 justify-content-center">
+                            <div class="input-group px-0 justify-content-center shadow-sm" id="sendingGroup" style="height: 5vh;">
+                                <input type="hidden" id="conversation_id" name="conversation_id" value="{{ Auth::user()->conversation->id }}">
+                                <input type="hidden" id="total_message" name="total_message" value="">
+                                <a id="attachment" class="btn border d-flex align-items-center px-3" href="javascript:;" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <i class="fas fa-paperclip" style="font-size: 25px;"></i>
+                                </a>
+                                <input type="file" class="d-none" id="attachmentFile" name="image">
+                                <input type="text" name="message_body" id="message_body" class="form-control form-control-sm border-bottom border-top border-start border-end border-0 shadow-none" placeholder="Type Here...">
+                                <button class="btn btn-sm btn-primary rounded-0 text-center" id="sendBtn" style="width: 70px;" onclick="sendMessage();">Send</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -140,7 +160,7 @@
                         </div>
                         <div class="col-md-12 mb-2">
                             <label for="name" class="text-md-end">{{ __('Name') }}</label>
-                            <input id="name" type="name" class="form-control" name="name" value="{{ old('name', $_GET['name'] ?? '') }}" {{ $_GET['name'] ? 'readonly' : '' }} required placeholder="Name">
+                            <input id="name" type="name" class="form-control" name="name" value="{{ old('name', $_GET['name'] ?? '') }}" {{ $_GET['name'] ?? 0 ? 'readonly' : '' }} required placeholder="Name">
                             <span class="text-danger small" id="name_Error"></span>
                         </div>
 
@@ -151,13 +171,13 @@
 
                         <div class="col-md-12 mb-2">
                             <label for="email" class="text-md-end">{{ __('Email Address') }}</label>
-                            <input id="email" type="text" class="form-control" name="email" value="{{ old('email', $_GET['email'] ?? '') }}" {{ $_GET['email'] ? 'readonly' : '' }} required placeholder="Email address">
+                            <input id="email" type="text" class="form-control" name="email" value="{{ old('email', $_GET['email'] ?? '') }}" {{ $_GET['email'] ?? 0 ? 'readonly' : '' }} required placeholder="Email address">
                             <span class="text-danger small" id="email_Error"></span>
                         </div>
 
                         <div class="col-md-12 mb-2">
                             <label for="phone" class="text-md-end">{{ __('Phone') }}</label>
-                            <input id="phone" type="number" class="form-control" name="phone" value="{{ old('phone', $_GET['phone'] ?? '') }}" {{ $_GET['phone'] ? 'readonly' : '' }} required placeholder="Phone Number">
+                            <input id="phone" type="number" class="form-control" name="phone" value="{{ old('phone', $_GET['phone'] ?? '') }}" {{ $_GET['phone'] ?? 0 ? 'readonly' : '' }} required placeholder="Phone Number">
                             <span class="text-danger small" id="phone_Error"></span>
                         </div>
 
@@ -175,12 +195,28 @@
 </body>
 
 </html>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('assets/moment.js') }}"></script>
 <script src="{{ asset('assets/moment.timezone.js') }}"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // enter key to send
+    $(document).ready(function() {
+        $('#message_body').keydown(function(event) {
+            if (event.keyCode === 13) { // Check if Enter key is pressed
+                event.preventDefault(); // Prevent default behavior
+                $("#sendBtn").click();
+            }
+        });
+
+        $("#attachment").on('click', function() {
+            $("#attachmentFile").click();
+        });
+    });
+    // enter key to send
+
     document.addEventListener('DOMContentLoaded', function() {
         const fileInput = document.getElementById('attachmentFile');
         const modal = new bootstrap.Modal(document.getElementById('imageModal'));
@@ -216,20 +252,6 @@
             $("#attachmentFile").val('');
         });
     });
-    // enter key to send
-    $(document).ready(function() {
-        $('#message_body').keydown(function(event) {
-            if (event.keyCode === 13) { // Check if Enter key is pressed
-                event.preventDefault(); // Prevent default behavior
-                $("#sendBtn").click();
-            }
-        });
-
-        $("#attachment").on('click', function() {
-            $("#attachmentFile").click();
-        });
-    });
-    // enter key to send
 </script>
 <script>
     setTimeout(function() {
@@ -347,12 +369,10 @@
             dataType: "JSON",
             url: "{{ route('user.get.conversation') }}",
             success: function(messages) {
-                $("#conversation_id").val(messages[0].conversation_id);
                 var data = "";
                 $.each(messages, function(key, value) {
                     const dateString = value.created_at;
                     const formattedDate = moment.utc(dateString).tz('Asia/Dhaka').format("MMMM DD, YYYY, h:mm A");
-
                     $("#total_message").val(messages.length);
                     data = data + "<div class='my-3'>"
                     if (value.type == 'send') {
@@ -410,13 +430,89 @@
                 })
 
                 $('#message_box').html(data);
+            }
+        });
+    }
+    // getting new message
+    function newMessage() {
+        $.ajax({
+            type: "GET",
+            dataType: "JSON",
+            url: "{{ route('user.get.new.message') }}",
+            success: function(message) {
+                var value = message[0];
+                const dateString = value.created_at;
+                const formattedDate = moment.utc(dateString).tz('Asia/Dhaka').format("MMMM DD, YYYY, h:mm A");
+                var data = "";
+                data = data + "<div class='my-3'>"
+                if (value.type == 'send') {
+                    data = data + "<div class='d-flex align-items-end justify-content-end clients-message mb-2'>"
+                    if (value.check_image == 1) {
+                        data = data + "<div class='text-end'>"
+                        data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
+                        data = data + "<br>"
+                        data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                        data = data + "</div>"
+                    } else {
+                        data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
+                        data = data + value.content
+                        data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                        data = data + "</span>"
+                    }
+                    data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2'>"
+                    data = data + "</div>"
+                } else {
+                    data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
+                    data = data + "<img src='{{ $admin->profile_logo ? asset('storage/admin/' . $admin->profile_logo) : asset('assets/soft-favicon-logo.png') }}' width='30' height='30' alt='' class='rounded-circle border me-2'>"
+                    if (value.check_image == 1) {
+                        data = data + "<div class='text-start'>"
+                        data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
+                        data = data + "<br>"
+                        data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                        data = data + "</div>"
+                    } else {
+                        data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
+                        data = data + value.content
+                        data = data + "<br>"
+                        data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                        data = data + "</span>"
+                    }
+                    data = data + "</div>"
+                }
+                data = data + "</div>"
+
+                if (value.check_image == 1) {
+                    // click to show image
+                    data = data + '<div class="modal fade" id="imageModal' + value.id + '" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">'
+                    data = data + '<div class="modal-dialog modal-dialog-centered">'
+                    data = data + '<div class="modal-content">'
+                    data = data + '<div class="modal-body">'
+                    data = data + '<div class="d-flex justify-content-end">'
+                    data = data + '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'
+                    data = data + '</div>'
+                    data = data + "<img width='100%' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "'>"
+                    data = data + '</div>'
+                    data = data + '</div>'
+                    data = data + '</div>'
+                    data = data + '</div>'
+                    // click to show image
+                }
+                var total = $("#total_message").val();
+                $("#total_message").val(message[1]);
+                if (total < message[1]) {
+                    $('#new_message_box').append(data);
+                    setTimeout(function() {
+                        var scrollDiv = $('#scroll_bottom');
+                        scrollDiv.scrollTop(scrollDiv.prop('scrollHeight'));
+                    }, 500); // Adjust the delay (in milliseconds) as needed
+                } else {}
                 setTimeout(() => {
-                    $('.modal').modal('hide');
-                    getAllMessages();
+                    newMessage();
                 }, 3000);
             }
         });
     }
+    // getting new message
     // Function to scroll to the bottom of the container
     $(document).ready(function() {
         setTimeout(function() {
@@ -424,6 +520,7 @@
             scrollDiv.scrollTop(scrollDiv.prop('scrollHeight'));
         }, 500); // Adjust the delay (in milliseconds) as needed
         getAllMessages();
+        newMessage();
     });
 
     // Scroll to the bottom whenever new content is added
@@ -454,7 +551,7 @@
             enctype: 'multipart/form-data', // Set the enctype option
             url: "{{ route('user.send.message') }}",
             success: function(success) {
-                getAllMessages();
+                newMessage();
                 clearField();
                 $("#sendBtn").addClass('shadow-none');
                 setTimeout(function() {
