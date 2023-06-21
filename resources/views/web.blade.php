@@ -569,6 +569,7 @@
         @auth()
             var authName = "{{ Auth::user()->name }}";
             var authId = "{{ Auth::user()->id }}";
+            var adminId = "{{ Auth::user()->conversation->admin_id }}";
         @endauth
         var serverKey = "key=AAAAWPTEeLI:APA91bFrXmdxu5T8eA6wZ1mPR797Kw1Rs9ae58rLPfgoWcoSxmO_TxgnP8abk2L3r86UBDGGHPkMGwmTsqWSH0romuMocuC7amCP-lr1d_XnKo46_TpNm5AsYfBax9xCGtNz-IbH5VQm";
         $.ajax({
@@ -579,7 +580,7 @@
                 "Content-Type": "application/json",
             },
             data: JSON.stringify({
-                to: '/topics/all',
+                to: '/topics/' + adminId,
                 notification: {
                     title: authName,
                     body: message_body,

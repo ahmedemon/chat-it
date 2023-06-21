@@ -16,7 +16,7 @@ class ApiController extends Controller
     public function index()
     {
         $admin_id = $_SERVER['QUERY_STRING'];
-        $data = Conversation::where('admin_id', $admin_id)->with('messages')->latest()->get();
+        $data = Conversation::where('admin_id', $admin_id)->with('messages')->orderBy('updated_at', 'desc')->get();
         return response()->json($data);
     }
 
