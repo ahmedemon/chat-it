@@ -26,6 +26,12 @@ class ApiController extends Controller
         return response()->json($data);
     }
 
+    public function getUserDetailsById($id)
+    {
+        $data = User::with('conversation')->findOrFail($id);
+        return response()->json($data);
+    }
+
     public function send(Request $request)
     {
         $text = $request->content;
