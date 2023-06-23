@@ -4,6 +4,20 @@
     <link rel="stylesheet" href="{{ asset('user/css/cropper.css') }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" />
+    <style>
+        input[type="color"] {
+            appearance: none;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            background: none;
+            border: 0;
+            overflow: hidden;
+            cursor: pointer;
+            height: 50px;
+            width: 50px;
+            padding: 0;
+        }
+    </style>
 @endpush
 @section('content')
     <div class="row justify-content-center mx-auto align-items-center" id="main_container">
@@ -70,8 +84,14 @@
                                                 <input type="text" id="site_link" name="site_link" class="form-control" value="{{ $setting->site_link }}">
                                             </div>
                                         </div>
+                                        <div class="col-md-9 mb-2">
+                                            <label for="btn_color">Button Color</label>
+                                            <div class="input-group">
+                                                <input type="color" id="btn_color" name="btn_color" class="form-control rounded-0" value="{{ $setting->btn_color }}">
+                                            </div>
+                                        </div>
 
-                                        <button class="btn w-50 btn-success mt-4">Update</button>
+                                        <button class="btn w-50 mt-4 text-white" style="background-color: {{ $setting->btn_color }}">Update</button>
                                     </div>
                                 </form>
                             </div>
