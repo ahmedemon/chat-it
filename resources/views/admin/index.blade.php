@@ -51,7 +51,7 @@
                                     </a>
                                     <input type="file" class="d-none" id="attachmentFile" name="image">
                                     <input type="text" name="message_body" id="message_body" class="form-control shadow-none border" placeholder="Type Here...">
-                                    <button class="btn btn-primary rounded-0" id="sendBtn" onclick="sendMessage();">Send</button>
+                                    <button class="btn text-white rounded-0" style="background-color: {{ Auth::guard('admin')->user()->setting->btn_color }}; border: 1px solid {{ Auth::guard('admin')->user()->setting->btn_color }};" id="sendBtn" onclick="sendMessage();">Send</button>
                                 </div>
                             </div>
                         </div>

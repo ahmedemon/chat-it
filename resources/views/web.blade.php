@@ -135,7 +135,7 @@
                                 </a>
                                 <input type="file" class="d-none" id="attachmentFile" name="image">
                                 <input type="text" name="message_body" id="message_body" class="form-control form-control-sm border-bottom border-top border-start border-end border-0 shadow-none" placeholder="Type Here...">
-                                <button class="btn btn-sm btn-primary rounded-0 text-center" id="sendBtn" style="width: 70px;" onclick="sendMessage();">Send</button>
+                                <button class="btn btn-sm rounded-0 text-center text-white" id="sendBtn" style="width: 70px; background-color: {{ $setting->btn_color }}; border: 1px solid {{ $setting->btn_color }};" onclick="sendMessage();">Send</button>
                             </div>
                         </div>
                     </div>
@@ -183,7 +183,7 @@
 
                         <div class="col-md-12">
                             <input type="hidden" id="from_url" type="from_url" value="{{ Crypt::encrypt($_GET['site']) }}">
-                            <button type="submit" class="btn btn-primary w-100 mt-3" onclick="initial();">{{ __('Start Chat') }}</button>
+                            <button type="submit" class="btn w-100 mt-3 text-white" style="background-color: {{ $setting->btn_color }}; border: 1px solid {{ $setting->btn_color }};" onclick="initial();">{{ __('Start Chat') }}</button>
                         </div>
 
                     </div>

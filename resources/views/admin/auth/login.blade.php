@@ -47,7 +47,7 @@
                         </label>
                     </div>
                     <div class="form-group text-center custom-mt-form-group mt-2">
-                        <button class="btn btn-primary btn-block account-btn" type="submit">Login</button>
+                        <button class="btn btn-primary btn-block account-btn" style="background-color: {{ $setting->btn_color }}; border: 1px solid {{ $setting->btn_color }};" type="submit">Login</button>
                     </div>
                     <div class="text-center">
                         @if (Route::has('password.request'))
