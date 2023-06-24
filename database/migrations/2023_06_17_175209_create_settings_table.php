@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('site_link')->nullable();
             $table->string('link_title')->nullable();
             $table->string('btn_color')->nullable();
+            $table->string('login_header')->nullable();
             $table->timestamps();
         });
     }

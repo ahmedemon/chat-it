@@ -16,6 +16,7 @@ class Setting extends Model
         'site_greetings',
         'site_link',
         'link_title',
-        'btn_color'
+        'btn_color',
+        'login_header',
     ];
 }

@@ -39,6 +39,7 @@ class ProfileController extends Controller
         $setting->site_link = $request->site_link;
         $setting->link_title = $request->link_title;
         $setting->btn_color = $request->btn_color;
+        $setting->login_header = $request->login_header;
 
         if ($request->site_logo) {
             if ($setting->site_logo != null) {

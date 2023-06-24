@@ -50,7 +50,7 @@
 
         @media screen and (min-width: 300px) and (max-width: 768px) {
             #scroll_bottom {
-                height: 83vh;
+                height: 80vh;
             }
 
             #header {
@@ -89,7 +89,7 @@
                                 <div class="d-flex align-items-center ms-2">
                                     <div>
                                         <h5 class="text-center my-0" style="font-family: 'Courgette', cursive; font-weight: bold; font-size: 16px;">
-                                            <a class="text-decoration-none" target="_blank" href="{{ $setting->site_link ?? 'https://softhostit.com' }}">{{ $setting->link_title ?? 'Soft Host It' }}</a>
+                                            <a class="text-decoration-none" href="javascript:;">{{ Auth::user()->name ?? 'Soft Host It' }}</a>
                                         </h5>
                                         <h5 class="text-start text-success my-0" style="font-size: 9px;">
                                             Active Now
@@ -154,8 +154,8 @@
                             <div class="d-flex justify-content-center mt-3">
                                 <img src="{{ $setting->site_logo ? asset('storage/admin/' . $setting->site_logo) : asset('assets/chat-head.png') }}" height="150" alt="">
                             </div>
-                            <h4 class="text-center my-3" style="font-family: 'Courgette', cursive; font-weight: bold;">
-                                Welcome To <a class="text-decoration-none" href="{{ $setting->site_link ?? 'https://softhostit.com' }}" target="_blank">{{ $setting->link_title ?? 'Soft Host It' }}</a> Live Support Center
+                            <h4 class="text-center my-3" style="font-family: 'Courgette', cursive;">
+                                {!! $setting->login_header !!}
                             </h4>
                         </div>
                         <div class="col-md-12 mb-2">

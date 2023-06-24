@@ -18,6 +18,7 @@
             padding: 0;
         }
     </style>
+    <script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
 @endpush
 @section('content')
     <div class="row justify-content-center mx-auto align-items-center" id="main_container">
@@ -29,7 +30,7 @@
                     <!-- left header -->
                     <div class="border-0 px-0 d-lg-flex align-items-center" style="height: 94vh; overflow-y: scroll;">
                         <div class="row mx-auto justify-content-center">
-                            <div class="col-md-8 d-flex justify-content-center">
+                            <div class="col-md-8">
                                 <form action="{{ route('admin.profile.update', Auth::guard('admin')->user()->id) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
@@ -66,29 +67,35 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-9 mb-2">
+                                        <div class="col-md-6 mb-2">
                                             <label for="link_title">Link Title</label>
                                             <div class="input-group">
                                                 <input type="text" id="link_title" name="link_title" class="form-control" value="{{ $setting->link_title }}">
                                             </div>
                                         </div>
-                                        <div class="col-md-9 mb-2">
+                                        <div class="col-md-6 mb-2">
                                             <label for="site_greetings">Site Greetings</label>
                                             <div class="input-group">
                                                 <input type="text" id="site_greetings" name="site_greetings" class="form-control" value="{{ $setting->site_greetings }}">
                                             </div>
                                         </div>
-                                        <div class="col-md-9 mb-2">
+                                        <div class="col-md-6 mb-2">
                                             <label for="site_link">Site Link</label>
                                             <div class="input-group">
                                                 <input type="text" id="site_link" name="site_link" class="form-control" value="{{ $setting->site_link }}">
                                             </div>
                                         </div>
-                                        <div class="col-md-9 mb-2">
+
+                                        <div class="col-md-6 mb-2">
                                             <label for="btn_color">Button Color</label>
                                             <div class="input-group">
                                                 <input type="color" id="btn_color" name="btn_color" class="form-control rounded-0" value="{{ $setting->btn_color }}">
                                             </div>
+                                        </div>
+
+                                        <div class="col-md-12 mb-2">
+                                            <label for="login_header">Login Header</label>
+                                            <textarea id="editor" name="login_header">{{ $setting->login_header }}</textarea>
                                         </div>
 
                                         <button class="btn w-50 mt-4 text-white" style="background-color: {{ $setting->btn_color }}">Update</button>
@@ -101,6 +108,9 @@
             </div>
         </div>
     </div>
+    <script>
+        CKEDITOR.replace('editor');
+    </script>
 @endsection
 @push('js')
     <script>
