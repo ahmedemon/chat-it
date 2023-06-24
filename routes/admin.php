@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\Auth\ForgotPasswordController;
 use App\Http\Controllers\Admin\Auth\RegisterController;
 use App\Http\Controllers\Admin\Auth\ResetPasswordController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PanelRequestController;
 use App\Http\Controllers\Admin\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,4 +36,10 @@ Route::middleware('admin')->group(function () {
     Route::get('inboxes', [DashboardController::class, 'getInboxes'])->name('get.inboxes');
     Route::get('seen/{id}', [DashboardController::class, 'seen'])->name('seen');
     Route::get('send-email/{id}', [DashboardController::class, 'sendEmail'])->name('send.email');
+
+    Route::group(['prefix' => 'panel-request', 'as' => 'panel.'], function () {
+        Route::get('', [PanelRequestController::class, 'index'])->name('index');
+        Route::get('approve/{id}', [PanelRequestController::class, 'approve'])->name('approve');
+        Route::get('delete/{id}', [PanelRequestController::class, 'destroy'])->name('delete');
+    });
 });

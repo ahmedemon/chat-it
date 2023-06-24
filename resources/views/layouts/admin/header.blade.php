@@ -11,13 +11,18 @@
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-end py-0 rounded-0" aria-labelledby="navbarDropdown">
-                    <a class="btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.index') }}">
+                    <a class="text-start ps-2 btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.index') }}">
                         {{ __('Home') }}
                     </a>
-                    <a class="btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.profile.index') }}">
+                    <a class="text-start ps-2 btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.profile.index') }}">
                         {{ __('Profile') }}
                     </a>
-                    <a class="btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.logout') }}?panel={{ Auth::guard('admin')->user()->id }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    @if (Auth::guard('admin')->user()->main_account == 1)
+                        <a class="text-start ps-2 btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.panel.index') }}">
+                            {{ __('Request') }}
+                        </a>
+                    @endif
+                    <a class="text-start ps-2 btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.logout') }}?panel={{ Auth::guard('admin')->user()->id }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         {{ __('Logout') }}
                     </a>
 
