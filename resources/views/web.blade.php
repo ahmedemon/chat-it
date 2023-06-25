@@ -186,6 +186,10 @@
                             <button type="submit" class="btn w-100 mt-3 text-white" style="background-color: {{ $setting->btn_color }}; border: 1px solid {{ $setting->btn_color }};" onclick="initial();">{{ __('Start Chat') }}</button>
                         </div>
 
+                        <div class="text-center mt-3">
+                            <a class="btn-link text-decoration-none" href="{{ route('admin.register.index') }}" target="_blank">Want Support Center For Your Website?</a>
+                        </div>
+
                     </div>
                 </div>
             @endauth
