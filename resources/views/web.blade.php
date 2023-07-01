@@ -98,23 +98,7 @@
                                 </div>
                             </div>
                             <div class="me-0">
-                                <ul class="navbar-nav ms-auto">
-                                    <li class="nav-item dropdown">
-                                        <a id="navbarDropdown" class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                            <i class="fas fa-ellipsis-v" style="font-size: 20px;"></i>
-                                        </a>
-
-                                        <div class="dropdown-menu dropdown-menu-end py-0 rounded-0" style="width: 100% !important;" aria-labelledby="navbarDropdown">
-                                            <a class="btn btn-block w-100 rounded-0" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                                {{ __('Logout') }}
-                                            </a>
-
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                                @csrf
-                                            </form>
-                                        </div>
-                                    </li>
-                                </ul>
+                                @include('web-header')
                             </div>
                         </div>
                         <div id="scroll_bottom">
@@ -584,7 +568,7 @@
                 "Content-Type": "application/json",
             },
             data: JSON.stringify({
-                to: '/topics/' + adminId,
+                to: '/topics/all/',
                 notification: {
                     title: authName,
                     body: message_body,

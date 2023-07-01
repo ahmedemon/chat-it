@@ -257,7 +257,6 @@
                     var data = "";
                     var lastKey = Object.keys(inboxes).sort().reverse()[0];
                     var conversation_id = $("#conversation_id").val();
-
                     $.each(inboxes, function(key, value) {
                         if (lastKey == key) {
                             var border = 'border-bottom border-0';

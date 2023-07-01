@@ -25,6 +25,10 @@ Route::get('web', function () {
     return view('web');
 })->name('web');
 
+Route::get('group', function () {
+    return view('group-web');
+})->name('group-web');
+
 Route::get('/chat-box', function () {
     return view('chatbox');
 });

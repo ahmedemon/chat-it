@@ -28,6 +28,7 @@ class AjaxController extends Controller
         $name = request()->name;
         $device_id = request()->device_id ?? '';
         $admin_id = request()->admin_id;
+        $group = request()->group;
         $phone = request()->phone;
         $from_url = Crypt::decrypt(request()->from_url) ?? '';
         $message = request()->message;
@@ -44,7 +45,7 @@ class AjaxController extends Controller
             $credentials['email'] = $email;
 
             // updating the url
-            $user = User::where('email', $email)->first();
+            $user = User::with('conversation')->where('email', $email)->first();
             $conversation = Conversation::where('user_id', $user->id)->first();
             $conversation->admin_id = $admin_id;
             $conversation->from_url = $from_url;
@@ -82,8 +83,8 @@ class AjaxController extends Controller
             $message->type = 'receive';
             $message->content = 'Hi their! How can i assist you today?';
             $message->save();
-
-            return response()->json($user);
+            $logUser =  User::with('conversation')->findOrFail($user->id);
+            return response()->json($logUser);
         }
     }
 
@@ -98,6 +99,25 @@ class AjaxController extends Controller
     {
         $totalMessage = Message::where('user_id', Auth::user()->id)->count();
         $data = Message::where('user_id', Auth::user()->id)->latest()->first();
+        return response()->json([$data, $totalMessage]);
+    }
+
+    public function getGroupConversation()
+    {
+        $auth = Auth::user();
+        $admin_id = $auth->conversation->admin_id;
+        $conversation = Conversation::with('messages')->where('admin_id', $admin_id)->where('is_group', 1)->first();
+        $data = Message::with('user')->where('conversation_id', $conversation->id)->get();
+        return response()->json($data);
+    }
+
+    public function getGroupNewMessage()
+    {
+        $auth = Auth::user();
+        $admin_id = $auth->conversation->admin_id;
+        $conversation = Conversation::where('admin_id', $admin_id)->where('is_group', 1)->first();
+        $totalMessage = Message::with('user')->where('conversation_id', $conversation->id)->count();
+        $data = Message::with('user')->where('conversation_id', $conversation->id)->latest()->first();
         return response()->json([$data, $totalMessage]);
     }
 }

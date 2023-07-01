@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('from_url')->nullable();
             $table->string('status')->default('receive');
+            $table->boolean('is_group')->default('0');
             $table->timestamps();
         });
     }

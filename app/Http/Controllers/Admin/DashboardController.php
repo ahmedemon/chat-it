@@ -31,10 +31,12 @@ class DashboardController extends Controller
     {
         $text = $request->message_body;
         $conversation = Conversation::findOrFail($id);
-        $user = User::findOrFail($conversation->user_id);
+        if ($conversation->user_id != 0) {
+            $user = User::findOrFail($conversation->user_id);
+        }
 
         $data = new Message();
-        $data->user_id = $user->id;
+        $data->user_id = $user->id ?? 0;
         $data->conversation_id = $conversation->id;
         $data->type = 'receive';
         $data->content = $text;
