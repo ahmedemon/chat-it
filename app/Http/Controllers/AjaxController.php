@@ -90,15 +90,19 @@ class AjaxController extends Controller
 
     public function getConversation()
     {
-        $conversation = Conversation::with('messages')->where('user_id', Auth::user()->id)->latest()->first();
-        $data = $conversation->messages;
+        $auth = Auth::user();
+        $conversation = Conversation::with('messages')->where('user_id', $auth->id)->where('is_group', 0)->first();
+        $data = Message::with('user')->where('conversation_id', $conversation->id)->get();
         return response()->json($data);
     }
 
     public function getNewMessage()
     {
-        $totalMessage = Message::where('user_id', Auth::user()->id)->count();
-        $data = Message::where('user_id', Auth::user()->id)->latest()->first();
+        $auth = Auth::user();
+        $admin_id = $auth->conversation->admin_id;
+        $conversation = Conversation::where('admin_id', $admin_id)->where('user_id', $auth->id)->where('is_group', 0)->first();
+        $totalMessage = Message::with('user')->where('conversation_id', $conversation->id)->count();
+        $data = Message::with('user')->where('conversation_id', $conversation->id)->latest()->first();
         return response()->json([$data, $totalMessage]);
     }
 

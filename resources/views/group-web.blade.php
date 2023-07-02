@@ -223,7 +223,17 @@
 
     // fetching all data using ajax
     function getAllMessages() {
-        var authId = "{{ Auth::user()->id }}";
+        // check authentication
+        @auth()
+            var authId = "{{ Auth::user()->id }}";
+        @else
+            var name = "{{ $_GET['name'] ?? '' }}";
+            var site = "{{ $_GET['site'] ?? '' }}";
+            var email = "{{ $_GET['email'] ?? '' }}";
+            var phone = "{{ $_GET['phone'] ?? '' }}";
+            window.location.href = "https://support.softhostit.com/web?2?&site=" + site + "&name=" + name + "&email=" + email + "&phone=" + phone + "&group=1";
+        @endauth
+        // check authentication
         $.ajax({
             type: "GET",
             dataType: "JSON",
@@ -297,7 +307,17 @@
     }
     // getting new message
     function newMessage() {
-        var authId = "{{ Auth::user()->id }}";
+        // check authentication
+        @auth()
+            var authId = "{{ Auth::user()->id }}";
+        @else
+            var name = "{{ $_GET['name'] ?? '' }}";
+            var site = "{{ $_GET['site'] ?? '' }}";
+            var email = "{{ $_GET['email'] ?? '' }}";
+            var phone = "{{ $_GET['phone'] ?? '' }}";
+            window.location.href = "https://support.softhostit.com/web?2?&site=" + site + "&name=" + name + "&email=" + email + "&phone=" + phone + "&group=1";
+        @endauth
+        // check authentication
         $.ajax({
             type: "GET",
             dataType: "JSON",

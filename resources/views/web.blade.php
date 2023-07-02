@@ -303,8 +303,17 @@
             success: function(success) {
                 $("#chat-box-container").removeClass('d-none');
                 $("#login-register-container").addClass('d-none');
-                getAllMessages();
-                refreshSection();
+                var group = "{{ $_GET['group'] ?? 0 }}";
+                if (group == 1) {
+                    var name = "{{ $_GET['name'] ?? '' }}";
+                    var site = "{{ $_GET['site'] ?? '' }}";
+                    var email = "{{ $_GET['email'] ?? '' }}";
+                    var phone = "{{ $_GET['phone'] ?? '' }}";
+                    window.location.href = "https://support.softhostit.com/group?2?&site=" + site + "&name=" + name + "&email=" + email + "&phone=" + phone + "&group=1";
+                } else {
+                    getAllMessages();
+                    refreshSection();
+                }
             },
             error: function(error) {
                 var $errors = error.responseJSON.errors;
