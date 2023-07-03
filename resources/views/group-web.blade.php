@@ -257,6 +257,7 @@
                             data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
                             data = data + value.content
                             data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                            data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
                             data = data + "</span>"
                         }
                         data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2'>"
