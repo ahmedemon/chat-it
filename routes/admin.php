@@ -37,9 +37,14 @@ Route::middleware('admin')->group(function () {
     Route::get('seen/{id}', [DashboardController::class, 'seen'])->name('seen');
     Route::get('send-email/{id}', [DashboardController::class, 'sendEmail'])->name('send.email');
 
-    Route::group(['prefix' => 'panel-request', 'as' => 'panel.'], function () {
+    Route::group(['prefix' => 'panel', 'as' => 'panel.'], function () {
         Route::get('', [PanelRequestController::class, 'index'])->name('index');
+        Route::get('admins', [PanelRequestController::class, 'admins'])->name('admins');
+        Route::get('manage/group', [PanelRequestController::class, 'group'])->name('group');
         Route::get('approve/{id}', [PanelRequestController::class, 'approve'])->name('approve');
         Route::get('delete/{id}', [PanelRequestController::class, 'destroy'])->name('delete');
+
+        Route::get('make/monitor/{id}', [PanelRequestController::class, 'makeMonitor'])->name('make.monitor');
+        Route::get('remove/monitor/{id}', [PanelRequestController::class, 'removeMonitor'])->name('remove.monitor');
     });
 });

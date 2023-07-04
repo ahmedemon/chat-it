@@ -124,4 +124,12 @@ class AjaxController extends Controller
         $data = Message::with('user')->where('conversation_id', $conversation->id)->latest()->first();
         return response()->json([$data, $totalMessage]);
     }
+
+    public function deleteMessage($id)
+    {
+        $data = Message::findOrFail($id);
+        $data->is_deleted = 1;
+        $data->save();
+        return response()->json();
+    }
 }

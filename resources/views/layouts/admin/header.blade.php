@@ -19,7 +19,7 @@
                     </a>
                     @if (Auth::guard('admin')->user()->main_account == 1)
                         <a class="text-start ps-2 btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.panel.index') }}">
-                            {{ __('Request') }}
+                            {{ __('Dashboard') }}
                         </a>
                     @endif
                     <a class="text-start ps-2 btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.logout') }}?panel={{ Auth::guard('admin')->user()->id }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -37,3 +37,17 @@
         </ul>
     </div>
 </div>
+@push('js')
+    <script>
+        $(".toggle").on('click', function() {
+            $("#sidebar").toggleClass('d-none');
+        });
+
+        $(".toggle-home").on('click', function() {
+            $("#conversation_id").val('');
+            $("#grettings-page").removeClass('d-none');
+            $("#header-right").addClass('d-none');
+            $(".btn-outline-dark").removeClass('active');
+        });
+    </script>
+@endpush

@@ -3,45 +3,15 @@
     <div class="row justify-content-center mx-auto align-items-center" id="main_container">
         <div class="col-12">
             <div class="row bg-white">
-                <div class="col-12 col-md-12 px-0 border-end bg-white sticky-sm-top" id="sidebar">
+                <div class="col-12 col-md-12 px-0 border-end bg-white sticky-sm-top">
                     @include('layouts.admin.header')
                     <div class="" style="height: 94vh; overflow-y: scroll;">
                         <div class="row mx-auto justify-content-center">
                             @include('admin.panel.sidebar')
                             <div class="col-md-9">
                                 <div class="card mt-3">
-                                    <div class="card-body table-responsive">
-                                        <table class="table table-sm table-bordered text-center table-striped">
-                                            <thead>
-                                                <th>SL</th>
-                                                <th>Name</th>
-                                                <th>Username</th>
-                                                <th>Email</th>
-                                                <th>Phone</th>
-                                                <th>Address</th>
-                                                <th>Domain</th>
-                                                <th>Password</th>
-                                                <th>Action</th>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($admins as $admin)
-                                                    <tr>
-                                                        <td>{{ $loop->iteration }}</td>
-                                                        <td>{{ $admin->name }}</td>
-                                                        <td>{{ $admin->username }}</td>
-                                                        <td>{{ $admin->email }}</td>
-                                                        <td>{{ $admin->phone }}</td>
-                                                        <td>{{ $admin->address }}</td>
-                                                        <td>{{ $admin->domain }}</td>
-                                                        <td>{{ $admin->show_password }}</td>
-                                                        <td>
-                                                            <a href="{{ route('admin.panel.approve', $admin->id) }}" class="btn btn-sm btn-success">Approve</a>
-                                                            <a href="{{ route('admin.panel.delete', $admin->id) }}" class="btn btn-sm btn-danger">Destroy</a>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                    <div class="card-body text-center">
+                                        Welcome To Dashboard
                                     </div>
                                 </div>
                             </div>

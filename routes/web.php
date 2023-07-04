@@ -39,8 +39,10 @@ Route::get('/fcm-check', function () {
 
 Auth::routes();
 
+
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('login-or-create', [AjaxController::class, 'loginOrAccount'])->name('login.or.create');
+Route::get('delete-message/{id}', [AjaxController::class, 'deleteMessage'])->name('delete.message');
 
 Route::get('storage', function () {
     Artisan::call('storage:link');

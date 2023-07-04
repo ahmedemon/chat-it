@@ -222,6 +222,10 @@
     // refresh the section
 
     // fetching all data using ajax
+    @auth()
+        var monitor = "{{ Auth::user()->is_monitor }}";
+    @else
+    @endauth
     function getAllMessages() {
         // check authentication
         @auth()
@@ -247,38 +251,94 @@
                     data = data + "<div class='my-3'>"
                     if (value.user_id == authId) {
                         data = data + "<div class='d-flex align-items-end justify-content-end clients-message mb-2'>"
-                        if (value.check_image == 1) {
-                            data = data + "<div class='text-end'>"
-                            data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
-                            data = data + "<br>"
-                            data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                        if (value.is_deleted == 1) {
+                            data = data + "<div class='d-flex align-items-end justify-content-start agent-message'>"
+                            data = data + "<div class='d-flex w-100 align-items-center'>"
+
+                            data = data + "<span title='" + formattedDate + "' class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color: #ebebeb;'>"
+                            data = data + "<small style='color: #8b8b8b;'>Message Deleted</small>"
+                            data = data + "</span>"
+
+                            data = data + "</div>"
                             data = data + "</div>"
                         } else {
-                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
-                            data = data + value.content
-                            data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
-                            data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
-                            data = data + "</span>"
+                            // reply button
+                            if (monitor == 1 || value.user_id == authId) {
+                                data = data + '<ul class="navbar-nav me-4">'
+                                data = data + '<li class="nav-item dropdown dropend">'
+                                data = data + '<a id="navbarDropdown" class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>'
+                                data = data + '<i class="fas fa-ellipsis-v" style="font-size: 20px;"></i>'
+                                data = data + '</a>'
+
+                                data = data + '<div class="dropdown-menu dropdown-menu-end py-0 rounded-0 ms-3" aria-labelledby="navbarDropdown">'
+
+                                data = data + '<a href="javascript:;" onclick="deleteMessage(' + value.id + ')" class="btn btn-sm btn-block text-start ps-3 w-100 rounded-0">Delete</a>'
+                                data = data + '</div>'
+                                data = data + '</li>'
+                                data = data + '</ul>'
+                            }
+                            // reply button
+                            if (value.check_image == 1) {
+                                data = data + "<div class='text-end'>"
+                                data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
+                                data = data + "<br>"
+                                data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                                data = data + "</div>"
+                            } else {
+                                data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
+                                data = data + value.content
+                                data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                                data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
+                                data = data + "</span>"
+                            }
                         }
                         data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2'>"
                         data = data + "</div>"
                     } else {
                         data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
                         data = data + "<img src='{{ asset('assets/user.png') }}' width='30' height='30' alt='' class='rounded-circle border me-2'>"
-                        if (value.check_image == 1) {
-                            data = data + "<div class='text-start'>"
-                            data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
-                            data = data + "<br>"
-                            data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
-                            data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
+                        if (value.is_deleted == 1) {
+                            data = data + "<div class='d-flex align-items-end justify-content-start agent-message'>"
+                            data = data + "<div class='d-flex w-100 align-items-center'>"
+
+                            data = data + "<span title='" + formattedDate + "' class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color: #ebebeb;'>"
+                            data = data + "<small style='color: #8b8b8b;'>Message Deleted</small>"
+                            data = data + "</span>"
+
+                            data = data + "</div>"
                             data = data + "</div>"
                         } else {
-                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
-                            data = data + value.content
-                            data = data + "<br>"
-                            data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
-                            data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
-                            data = data + "</span>"
+                            if (value.check_image == 1) {
+                                data = data + "<div class='text-start'>"
+                                data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
+                                data = data + "<br>"
+                                data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                                data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
+                                data = data + "</div>"
+                            } else {
+                                data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
+                                data = data + value.content
+                                data = data + "<br>"
+                                data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                                data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
+                                data = data + "</span>"
+                            }
+                            // reply button
+                            if (monitor == 1 || value.user_id == authId) {
+                                data = data + '<ul class="navbar-nav ms-4">'
+                                data = data + '<li class="nav-item dropdown dropend">'
+                                data = data + '<a id="navbarDropdown" class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>'
+                                data = data + '<i class="fas fa-ellipsis-v" style="font-size: 20px;"></i>'
+                                data = data + '</a>'
+
+                                data = data + '<div class="dropdown-menu dropdown-menu-end py-0 rounded-0 ms-3" aria-labelledby="navbarDropdown">'
+
+                                data = data + '<a href="javascript:;" onclick="deleteMessage(' + value.id + ')" class="btn btn-sm btn-block text-start ps-3 w-100 rounded-0">Delete</a>'
+                                data = data + '</div>'
+                                data = data + '</li>'
+                                data = data + '</ul>'
+                            }
+                            // reply button
                         }
                         data = data + "</div>"
                     }
@@ -331,37 +391,95 @@
                 data = data + "<div class='my-3'>"
                 if (value.user_id == authId) {
                     data = data + "<div class='d-flex align-items-end justify-content-end clients-message mb-2'>"
-                    if (value.check_image == 1) {
-                        data = data + "<div class='text-end'>"
-                        data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
-                        data = data + "<br>"
-                        data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                    if (value.is_deleted == 1) {
+                        data = data + "<div class='d-flex align-items-end justify-content-start agent-message'>"
+                        data = data + "<div class='d-flex w-100 align-items-center'>"
+
+                        data = data + "<span title='" + formattedDate + "' class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color: #ebebeb;'>"
+                        data = data + "<small style='color: #8b8b8b;'>Message Deleted</small>"
+                        data = data + "</span>"
+
+                        data = data + "</div>"
                         data = data + "</div>"
                     } else {
-                        data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color: #ececec;'>"
-                        data = data + value.content
-                        data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
-                        data = data + "</span>"
+                        // reply button
+                        if (monitor == 1 || value.user_id == authId) {
+                            data = data + '<ul class="navbar-nav me-4">'
+                            data = data + '<li class="nav-item dropdown dropend">'
+                            data = data + '<a id="navbarDropdown" class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>'
+                            data = data + '<i class="fas fa-ellipsis-v" style="font-size: 20px;"></i>'
+                            data = data + '</a>'
+
+                            data = data + '<div class="dropdown-menu dropdown-menu-end py-0 rounded-0 ms-3" aria-labelledby="navbarDropdown">'
+
+                            data = data + '<a href="javascript:;" onclick="deleteMessage(' + value.id + ')" class="btn btn-sm btn-block text-start ps-3 w-100 rounded-0">Delete</a>'
+                            data = data + '</div>'
+                            data = data + '</li>'
+                            data = data + '</ul>'
+                        }
+                        // reply button
+                        if (value.check_image == 1) {
+                            data = data + "<div class='text-end'>"
+                            data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
+                            data = data + "<br>"
+                            data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                            data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
+                            data = data + "</div>"
+                        } else {
+                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color: #ececec;'>"
+                            data = data + value.content
+                            data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                            data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
+                            data = data + "</span>"
+                        }
                     }
                     data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2'>"
                     data = data + "</div>"
                 } else {
                     data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
                     data = data + "<img src='{{ asset('assets/user.png') }}' width='30' height='30' alt='' class='rounded-circle border me-2'>"
-                    if (value.check_image == 1) {
-                        data = data + "<div class='text-start'>"
-                        data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
-                        data = data + "<br>"
-                        data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
-                        data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
+                    if (value.is_deleted == 1) {
+                        data = data + "<div class='d-flex align-items-end justify-content-start agent-message'>"
+                        data = data + "<div class='d-flex w-100 align-items-center'>"
+
+                        data = data + "<span title='" + formattedDate + "' class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color: #ebebeb;'>"
+                        data = data + "<small style='color: #8b8b8b;'>Message Deleted</small>"
+                        data = data + "</span>"
+
+                        data = data + "</div>"
                         data = data + "</div>"
                     } else {
-                        data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color: #ececec;'>"
-                        data = data + value.content
-                        data = data + "<br>"
-                        data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
-                        data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
-                        data = data + "</span>"
+                        if (value.check_image == 1) {
+                            data = data + "<div class='text-start'>"
+                            data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
+                            data = data + "<br>"
+                            data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                            data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
+                            data = data + "</div>"
+                        } else {
+                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color: #ececec;'>"
+                            data = data + value.content
+                            data = data + "<br>"
+                            data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                            data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
+                            data = data + "</span>"
+                        }
+                        // reply button
+                        if (monitor == 1 || value.user_id == authId) {
+                            data = data + '<ul class="navbar-nav ms-4">'
+                            data = data + '<li class="nav-item dropdown dropend">'
+                            data = data + '<a id="navbarDropdown" class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>'
+                            data = data + '<i class="fas fa-ellipsis-v" style="font-size: 20px;"></i>'
+                            data = data + '</a>'
+
+                            data = data + '<div class="dropdown-menu dropdown-menu-end py-0 rounded-0 ms-3" aria-labelledby="navbarDropdown">'
+
+                            data = data + '<a href="javascript:;" onclick="deleteMessage(' + value.id + ')" class="btn btn-sm btn-block text-start ps-3 w-100 rounded-0">Delete</a>'
+                            data = data + '</div>'
+                            data = data + '</li>'
+                            data = data + '</ul>'
+                        }
+                        // reply button
                     }
                     data = data + "</div>"
                 }
@@ -410,6 +528,27 @@
     });
 
     // Scroll to the bottom whenever new content is added
+
+    // delete message
+    function deleteMessage(id) {
+        var message_id = id;
+        var deleteUrl = "{{ route('delete.message', ':id') }}";
+        deleteUrl = deleteUrl.replace(':id', message_id);
+        $.ajax({
+            type: "GET",
+            dataType: "JSON",
+            url: deleteUrl,
+            success: function(messages) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Message Deleted!',
+                    text: 'Message Deleted Successfully!',
+                });
+                getAllMessages();
+            }
+        });
+    }
+    // delete message
 
     // fetching all data using ajax
 
@@ -466,7 +605,7 @@
                 "Content-Type": "application/json",
             },
             data: JSON.stringify({
-                to: '/topics/' + adminId,
+                to: '/topics/all',
                 notification: {
                     title: authName,
                     body: message_body,
