@@ -2,14 +2,14 @@
     $url = $_SERVER['REQUEST_URI'];
     $queryParams = explode('?', $url);
     $queryAdminId = $queryParams[1];
-    
+
     $admin = App\Models\Admin::where('id', $queryAdminId)->first();
     if ($admin != null) {
         $admin_id = $admin->id;
     } else {
         $admin_id = 1;
     }
-    
+
     $setting = App\Models\Setting::where('admin_id', $admin_id)->first();
 @endphp
 <!DOCTYPE html>
@@ -577,11 +577,11 @@
                 "Content-Type": "application/json",
             },
             data: JSON.stringify({
-                to: '/topics/all/',
+                to: '/topics/all',
                 notification: {
                     title: authName,
                     body: message_body,
-                    image: "https://support.softhostit.com/public/assets/chat-head.png",
+                    // image: "https://support.softhostit.com/public/assets/chat-head.png",
                 },
                 data: {
                     title: authName,
