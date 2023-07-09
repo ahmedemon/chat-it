@@ -56,7 +56,7 @@ class ChattingController extends Controller
             $data->user_id = $auth->id;
             $data->conversation_id = $conversation->id;
             $data->type = 'receive';
-            $data->content = 'Welcome Back Again, Hi their! How can i assist you today?';
+            $data->content = 'Welcome Back Again, How can i assist you today?';
             $data->save();
             $greetings = 1;
         } else {
