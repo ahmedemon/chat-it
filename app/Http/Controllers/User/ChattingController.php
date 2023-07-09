@@ -6,6 +6,7 @@ use App\Helpers\FileManager;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Message;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,6 +17,12 @@ class ChattingController extends Controller
         $text = request()->message_body;
         $auth = Auth::user();
         $conversation = Conversation::findOrFail(request()->conversation_id);
+
+        $lastMessage = Message::where('conversation_id', $conversation->id)->latest()->first();
+        $lastDataTimestamp = Carbon::parse($lastMessage->created_at);
+        $currentTime = Carbon::now();
+        $hoursDifference = $lastDataTimestamp->diffInHours($currentTime);
+
         $data = new Message();
         $data->user_id = $auth->id;
         $data->conversation_id = $conversation->id;
@@ -43,6 +50,19 @@ class ChattingController extends Controller
         $conversation->status = 'receive';
         $conversation->updated_at = now();
         $conversation->save();
-        return response()->json($data);
+
+        if ($hoursDifference >= 4) {
+            $data = new Message();
+            $data->user_id = $auth->id;
+            $data->conversation_id = $conversation->id;
+            $data->type = 'receive';
+            $data->content = 'Welcome Back Again, Hi their! How can i assist you today?';
+            $data->save();
+            $greetings = 1;
+        } else {
+            $greetings = 0;
+        }
+
+        return response()->json([$data, $greetings]);
     }
 }

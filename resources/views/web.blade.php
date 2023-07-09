@@ -509,7 +509,7 @@
                 } else {}
                 setTimeout(() => {
                     newMessage();
-                }, 3000);
+                }, 500);
             }
         });
     }
@@ -519,9 +519,9 @@
         setTimeout(function() {
             var scrollDiv = $('#scroll_bottom');
             scrollDiv.scrollTop(scrollDiv.prop('scrollHeight'));
+            newMessage();
         }, 500); // Adjust the delay (in milliseconds) as needed
         getAllMessages();
-        newMessage();
     });
 
     // Scroll to the bottom whenever new content is added
@@ -552,8 +552,14 @@
             enctype: 'multipart/form-data', // Set the enctype option
             url: "{{ route('user.send.message') }}",
             success: function(success) {
-                newMessage();
                 clearField();
+                setTimeout(() => {
+                    if (success[1] == 1) {
+                        getAllMessages();
+                    } else {
+                        newMessage();
+                    }
+                }, 500);
                 $("#sendBtn").addClass('shadow-none');
                 setTimeout(function() {
                     var scrollDiv = $('#scroll_bottom');
