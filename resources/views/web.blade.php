@@ -2,14 +2,14 @@
     $url = $_SERVER['REQUEST_URI'];
     $queryParams = explode('?', $url);
     $queryAdminId = $queryParams[1];
-
+    
     $admin = App\Models\Admin::where('id', $queryAdminId)->first();
     if ($admin != null) {
         $admin_id = $admin->id;
     } else {
         $admin_id = 1;
     }
-
+    
     $setting = App\Models\Setting::where('admin_id', $admin_id)->first();
 @endphp
 <!DOCTYPE html>
@@ -264,6 +264,10 @@
         if (name.length == 0) {
             $('#name').addClass('border-danger');
             $('#name_Error').text('Name is required!');
+        }
+        if (name.length < 2) {
+            $('#name').addClass('border-danger');
+            $('#name_Error').text('Minimum 2 character required on name!');
         }
         if (email.length == 0) {
             $('#email').addClass('border-danger');

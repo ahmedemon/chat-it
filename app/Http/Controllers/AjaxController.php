@@ -19,72 +19,75 @@ class AjaxController extends Controller
             'email' => 'required',
             'phone' => 'required',
         ]);
-        $emailOrUserName = request()->email;
-        if (strpos($emailOrUserName, "@gmail.com") !== false) {
-            $email = $emailOrUserName;
-        } else {
-            $email = $emailOrUserName . "@gmail.com";
-        }
-        $name = request()->name;
-        $device_id = request()->device_id ?? '';
-        $admin_id = request()->admin_id;
-        $group = request()->group;
-        $phone = request()->phone;
-        $from_url = Crypt::decrypt(request()->from_url) ?? '';
-        $message = request()->message;
-        $password = request()->password;
-        $user = User::where('email', $email)->count();
+        $nameStringCount = strlen(request()->name);
+        if ($nameStringCount >= 2) {
+            $emailOrUserName = request()->email;
+            if (strpos($emailOrUserName, "@gmail.com") !== false) {
+                $email = $emailOrUserName;
+            } else {
+                $email = $emailOrUserName . "@gmail.com";
+            }
+            $name = request()->name;
+            $device_id = request()->device_id ?? '';
+            $admin_id = request()->admin_id;
+            $group = request()->group;
+            $phone = request()->phone;
+            $from_url = Crypt::decrypt(request()->from_url) ?? '';
+            $message = request()->message;
+            $password = request()->password;
+            $user = User::where('email', $email)->count();
 
-        $parts = explode('@', $email);
-        $password = $parts[0];
-        $password;
-        $credentials = request()->only('password');
-        $credentials['email'] = $email;
-        if ($user > 0) {
+            $parts = explode('@', $email);
+            $password = $parts[0];
+            $password;
             $credentials = request()->only('password');
             $credentials['email'] = $email;
+            if ($user > 0) {
+                $credentials = request()->only('password');
+                $credentials['email'] = $email;
 
-            // updating the url
-            $user = User::with('conversation')->where('email', $email)->first();
-            $conversation = Conversation::where('user_id', $user->id)->first();
-            $conversation->admin_id = $admin_id;
-            $conversation->from_url = $from_url;
-            $conversation->device_id = $device_id;
-            $conversation->save();
-            // updating the url
+                // updating the url
+                $user = User::with('conversation')->where('email', $email)->first();
+                $conversation = Conversation::where('user_id', $user->id)->first();
+                $conversation->admin_id = $admin_id;
+                $conversation->from_url = $from_url;
+                $conversation->device_id = $device_id;
+                $conversation->save();
+                // updating the url
 
-            Auth::attempt($credentials);
-            return response()->json($user);
-        } else {
-            $user = User::create([
-                'name' => $name,
-                'phone' => $phone,
-                'email' => $email,
-                'password' => Hash::make($password),
-                'show_password' => $password,
-                'email_verified_at' => now()
-            ]);
-            $credentials = request()->only('password');
-            $credentials['email'] = $email;
-            Auth::attempt($credentials);
+                Auth::attempt($credentials);
+                return response()->json($user);
+            } else {
+                $user = User::create([
+                    'name' => $name,
+                    'phone' => $phone,
+                    'email' => $email,
+                    'password' => Hash::make($password),
+                    'show_password' => $password,
+                    'email_verified_at' => now()
+                ]);
+                $credentials = request()->only('password');
+                $credentials['email'] = $email;
+                Auth::attempt($credentials);
 
-            $auth = Auth::user();
-            $conversation = new Conversation();
-            $conversation->user_id = $auth->id;
-            $conversation->admin_id = $admin_id;
-            $conversation->device_id = $device_id;
-            $conversation->name = $name;
-            $conversation->from_url = $from_url;
-            $conversation->save();
+                $auth = Auth::user();
+                $conversation = new Conversation();
+                $conversation->user_id = $auth->id;
+                $conversation->admin_id = $admin_id;
+                $conversation->device_id = $device_id;
+                $conversation->name = $name;
+                $conversation->from_url = $from_url;
+                $conversation->save();
 
-            $message = new Message();
-            $message->user_id = $auth->id;
-            $message->conversation_id = $conversation->id;
-            $message->type = 'receive';
-            $message->content = 'Hi their! How can i assist you today?';
-            $message->save();
-            $logUser =  User::with('conversation')->findOrFail($user->id);
-            return response()->json($logUser);
+                $message = new Message();
+                $message->user_id = $auth->id;
+                $message->conversation_id = $conversation->id;
+                $message->type = 'receive';
+                $message->content = 'Hi their! How can i assist you today?';
+                $message->save();
+                $logUser =  User::with('conversation')->findOrFail($user->id);
+                return response()->json($logUser);
+            }
         }
     }
 
