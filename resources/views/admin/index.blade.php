@@ -256,8 +256,10 @@
                             var unseen = 'font-weight: normal;';
                         } else {
                             var unseen = 'font-weight: bold; background-color: darkgray;';
-                            var audio = new Audio('{{ asset('assets/sound/receive-admin.mp3') }}');
-                            audio.play();
+                            var sound = "{{ Auth::guard('admin')->user()->sound }}";
+                            if (sound == 1) {
+                                play();
+                            }
                         }
                         var onclick = "onclick = 'viewConversation(" + value.id + ");'"; // inbox onclick attribute
                         var id = "id='inbox" + value.id + "'"; // inbox id attribute
@@ -280,6 +282,14 @@
         $(document).ready(function() {
             setInterval(getInboxes, 5000);
         });
+
+        var audio;
+
+        function play() {
+            audio = new Audio('{{ asset('assets/sound/receive-admin.mp3') }}');
+            audio.play();
+        }
+
 
         // get inboxes
 
@@ -321,13 +331,17 @@
                                     data = data + "<br>"
                                     data = data + "<small class='text-success' style='font-size: 10px;'>From: " + value.site + "</small>"
                                     data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                                    data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
                                     data = data + "</div>"
                                 } else {
-                                    data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
+                                    data = data + "<span class='px-2 py-1 border-dark text-white' style='border-radius: 10px; !important; background-color:#418bd7;'>"
                                     data = data + value.content
                                     data = data + "<br>"
-                                    data = data + "<small class='text-success' style='font-size: 10px;'>From: " + value.site + "</small>"
-                                    data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                                    data = data + "<small class='' style='font-size: 10px;'>From: " + value.site + "</small>"
+                                    data = data + "<br><small class='' style='font-size: 10px;'> " + formattedDate + "</small>"
+                                    if (value.conversation.is_group == 0) {} else {
+                                        data = data + " <small>-</small> <small class='' style='font-size: 10px; color: chartreuse;'> " + value.user.name + "</small>"
+                                    }
                                     data = data + "</span>"
                                 }
                                 // reply button
@@ -385,9 +399,10 @@
                                     data = data + "<img width='300' class='rounded border' src='{{ asset('storage/messages/') }}/" + value.content + "' data-bs-toggle='modal' data-bs-target='#imageModal" + value.id + "'>"
                                     data = data + "<br>"
                                     data = data + "<small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                                    data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
                                     data = data + "</div>"
                                 } else {
-                                    data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
+                                    data = data + "<span class='px-2 py-1 border-dark text-end' style='border-radius: 10px; !important; background-color:#ececec;'>"
                                     data = data + value.content
                                     data = data + "<br>"
                                     data = data + "<small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"

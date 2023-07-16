@@ -2,14 +2,14 @@
     $url = $_SERVER['REQUEST_URI'];
     $queryParams = explode('?', $url);
     $queryAdminId = $queryParams[1];
-    
+
     $admin = App\Models\Admin::where('id', $queryAdminId)->first();
     if ($admin != null) {
         $admin_id = $admin->id;
     } else {
         $admin_id = 1;
     }
-    
+
     $setting = App\Models\Setting::where('admin_id', $admin_id)->first();
 @endphp
 <!DOCTYPE html>
@@ -180,6 +180,7 @@
         </div>
     </div>
     @include('image-modal')
+    @include('profile-picture-modal')
 </body>
 
 </html>
@@ -202,9 +203,14 @@
         $("#attachment").on('click', function() {
             $("#attachmentFile").click();
         });
+
+        $("#selectProfilePicture").on('click', function() {
+            $("#profilePictureFile").click();
+        });
     });
     // enter key to send
 
+    // send picture to group
     document.addEventListener('DOMContentLoaded', function() {
         const fileInput = document.getElementById('attachmentFile');
         const modal = new bootstrap.Modal(document.getElementById('imageModal'));
@@ -240,6 +246,45 @@
             $("#attachmentFile").val('');
         });
     });
+    // send picture to group
+
+    // profile picture
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('profilePictureFile');
+        const modal = new bootstrap.Modal(document.getElementById('profilePictureModal'));
+        const selectedImageElement = document.getElementById('selectedProfilePicture');
+        const sendImage = document.getElementById('uploadProfilePicture');
+
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                selectedImageElement.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            modal.show();
+        });
+
+        sendImage.addEventListener('click', function() {
+            closeModal();
+        });
+
+        modal._element.addEventListener('click', function(event) {
+            if (event.target === modal._element) {
+                closeModal();
+            }
+        });
+
+        function closeModal() {
+            modal.hide();
+            $("#profilePictureFile").val('');
+        }
+
+        $(".btn-close").on('click', function() {
+            $("#profilePictureFile").val('');
+        });
+    });
+    // profile picture
 </script>
 <script>
     setTimeout(function() {
@@ -316,7 +361,8 @@
                     window.location.href = "https://support.softhostit.com/group?2?&site=" + site + "&name=" + name + "&email=" + email + "&phone=" + phone + "&group=1";
                 } else {
                     getAllMessages();
-                    refreshSection();
+                    // refreshSection();
+                    location.reload();
                 }
             },
             error: function(error) {
@@ -390,7 +436,15 @@
                             data = data + "<br><small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
                             data = data + "</span>"
                         }
-                        data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2'>"
+                        @if (Auth::check())
+                            @if (Auth::user()->profile_picture == null)
+                                data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2 border rounded-circle' height='30' width='30'>"
+                            @else
+                                data = data + "<img src='{{ asset('storage/profile/' . Auth::user()->profile_picture) }}' width='30' alt='' class='ms-2 border rounded-circle' height='30' width='30'>"
+                            @endif
+                        @else
+                            data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2 border rounded-circle' height='30' width='30'>"
+                        @endif
                         data = data + "</div>"
                     } else {
                         data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
@@ -402,10 +456,10 @@
                             data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
                             data = data + "</div>"
                         } else {
-                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
+                            data = data + "<span class='px-2 py-1 border-dark text-white' style='border-radius: 10px; !important; background-color:#418bd7;'>"
                             data = data + value.content
                             data = data + "<br>"
-                            data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
+                            data = data + " <small class='' style='font-size: 10px;'> " + formattedDate + "</small>"
                             data = data + "</span>"
                         }
                         data = data + "</div>"
@@ -609,6 +663,41 @@
             }
         });
 
+    }
+    // sending data
+
+    // sending data
+    function uploadProfilePicture() {
+        var profile_picture = $('#profilePictureFile')[0].files[0]; // Get the selected profile_picture file
+
+        // Create a FormData object
+        var formData = new FormData();
+        formData.append('profile_picture', profile_picture);
+        formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+        @if (Auth::check())
+            var user_id = "{{ Auth::user()->id }}";
+        @endif
+        var updateProfileUrl = "{{ route('user.update.profile', ':id') }}";
+        updateProfileUrl = updateProfileUrl.replace(':id', user_id);
+        $.ajax({
+            type: "POST", // Change the request type to POST
+            dataType: "json",
+            data: formData, // Use the FormData object as the data
+            contentType: false, // Set contentType to false, jQuery will automatically set the appropriate content type
+            processData: false, // Prevent jQuery from processing the data
+            enctype: 'multipart/form-data', // Set the enctype option
+            url: updateProfileUrl,
+            success: function(success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Profile picture updated successfully!',
+                });
+            },
+            error: function(error) {
+                var $errors = error.responseJSON.errors;
+            }
+        });
     }
     // sending data
 </script>

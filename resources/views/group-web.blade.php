@@ -2,14 +2,14 @@
     $url = $_SERVER['REQUEST_URI'];
     $queryParams = explode('?', $url);
     $queryAdminId = $queryParams[1];
-    
+
     $admin = App\Models\Admin::where('id', $queryAdminId)->first();
     if ($admin != null) {
         $admin_id = $admin->id;
     } else {
         $admin_id = 1;
     }
-    
+
     $setting = App\Models\Setting::where('admin_id', $admin_id)->first();
 @endphp
 <!DOCTYPE html>
@@ -292,11 +292,16 @@
                                 data = data + "</span>"
                             }
                         }
-                        data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2'>"
+                        data = data + "<img src='{{ Auth::user()->profile_picture == null ? asset('assets/user.png') : asset('storage/profile/' . Auth::user()->profile_picture) }}' width='30' alt='' class='ms-2 border rounded-circle' height='30' width='30'>"
                         data = data + "</div>"
                     } else {
+                        if (value.user.profile_picture == '' || value.user.profile_picture == null) {
+                            var profile_picture = "<img src='{{ asset('assets/user.png') }}' width='30' height='30' alt='' class='rounded-circle border me-2'>"
+                        } else {
+                            var profile_picture = "<img src='{{ asset('storage/profile/') }}/" + value.user.profile_picture + "' width='30' alt='' class='me-2 border rounded-circle' height='30' width='30'>"
+                        }
                         data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
-                        data = data + "<img src='{{ asset('assets/user.png') }}' width='30' height='30' alt='' class='rounded-circle border me-2'>"
+                        data = data + profile_picture
                         if (value.is_deleted == 1) {
                             data = data + "<div class='d-flex align-items-end justify-content-start agent-message'>"
                             data = data + "<div class='d-flex w-100 align-items-center'>"
@@ -316,11 +321,11 @@
                                 data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
                                 data = data + "</div>"
                             } else {
-                                data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color:#ececec;'>"
+                                data = data + "<span class='px-2 py-1 border-dark text-white' style='border-radius: 10px; !important; background-color:#418bd7;'>"
                                 data = data + value.content
                                 data = data + "<br>"
-                                data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
-                                data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
+                                data = data + " <small class='' style='font-size: 10px;'> " + formattedDate + "</small>"
+                                data = data + " <small>-</small> <small class='' style='font-size: 10px; color: chartreuse;'> " + value.user.name + "</small>"
                                 data = data + "</span>"
                             }
                             // reply button
@@ -436,8 +441,13 @@
                     data = data + "<img src='{{ asset('assets/user.png') }}' width='30' alt='' class='ms-2'>"
                     data = data + "</div>"
                 } else {
+                    if (value.user.profile_picture == '' || value.user.profile_picture == null) {
+                        var profile_picture = "<img src='{{ asset('assets/user.png') }}' width='30' height='30' alt='' class='rounded-circle border me-2'>"
+                    } else {
+                        var profile_picture = "<img src='{{ asset('storage/profile/') }}/" + value.user.profile_picture + "' width='30' alt='' class='me-2 border rounded-circle' height='30' width='30'>"
+                    }
                     data = data + "<div class='d-flex align-items-end justify-content-start agent-message mb-2'>"
-                    data = data + "<img src='{{ asset('assets/user.png') }}' width='30' height='30' alt='' class='rounded-circle border me-2'>"
+                    data = data + profile_picture
                     if (value.is_deleted == 1) {
                         data = data + "<div class='d-flex align-items-end justify-content-start agent-message'>"
                         data = data + "<div class='d-flex w-100 align-items-center'>"
@@ -457,11 +467,11 @@
                             data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
                             data = data + "</div>"
                         } else {
-                            data = data + "<span class='px-2 py-1 border-dark' style='border-radius: 10px; !important; background-color: #ececec;'>"
+                            data = data + "<span class='px-2 py-1 border-dark text-white' style='border-radius: 10px; !important; background-color: #418bd7;'>"
                             data = data + value.content
                             data = data + "<br>"
-                            data = data + " <small class='text-success' style='font-size: 10px;'> " + formattedDate + "</small>"
-                            data = data + "<small class='text-success' style='font-size: 10px;'> - " + value.user.name + "</small>"
+                            data = data + " <small class='' style='font-size: 10px;'> " + formattedDate + "</small>"
+                            data = data + " <small>-</small> <small class='' style='font-size: 10px; color: chartreuse;'> " + value.user.name + "</small>"
                             data = data + "</span>"
                         }
                         // reply button

@@ -36,6 +36,8 @@ Route::middleware('admin')->group(function () {
     Route::get('inboxes', [DashboardController::class, 'getInboxes'])->name('get.inboxes');
     Route::get('seen/{id}', [DashboardController::class, 'seen'])->name('seen');
     Route::get('send-email/{id}', [DashboardController::class, 'sendEmail'])->name('send.email');
+    Route::get('view-group/{id}', [DashboardController::class, 'viewGroup'])->name('view.group');
+    Route::get('sound', [DashboardController::class, 'sound'])->name('sound.on.off');
 
     Route::group(['prefix' => 'panel', 'as' => 'panel.'], function () {
         Route::get('', [PanelRequestController::class, 'index'])->name('index');

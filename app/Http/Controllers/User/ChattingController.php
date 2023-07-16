@@ -6,9 +6,11 @@ use App\Helpers\FileManager;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ChattingController extends Controller
 {
@@ -64,5 +66,32 @@ class ChattingController extends Controller
         }
 
         return response()->json([$data, $greetings]);
+    }
+
+    public function updateImage(Request $request, $id)
+    {
+        // return $request->all();
+        $this->validate(
+            $request,
+            [
+                'profile_picture' => 'required'
+            ],
+            [
+                'profile_picture.required' => 'Please select an profile picture first.'
+            ]
+        );
+        $user = User::findOrFail($id);
+        $file = new FileManager();
+        if ($request->profile_picture) {
+            if ($user->profile_picture != null) {
+                Storage::disk('user')->delete($user->profile_picture);
+            }
+            $photo = $request->profile_picture;
+            $file->folder('profile')->prefix('user-profile')
+                ->upload($photo) ?
+                $user->profile_picture = $file->getName() : null;
+        }
+        $user->save();
+        return response()->json($user);
     }
 }

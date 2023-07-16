@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\Conversation;
 use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -44,6 +45,16 @@ class RegisterController extends Controller
         $setting->admin_id = $admin->id;
         $setting->site_link = $request->domain;
         $setting->save();
+
+        $conversation = new Conversation();
+        $conversation->user_id = 0;
+        $conversation->admin_id = $admin->id;
+        $conversation->device_id = '';
+        $conversation->name = 'Group';
+        $conversation->from_url = $setting->site_link;
+        $conversation->status = 'seen';
+        $conversation->is_group = 1;
+        $conversation->save();
 
         Auth::guard('admin')->attempt($request->only('email', 'password'));
         return redirect()->route('admin.index');

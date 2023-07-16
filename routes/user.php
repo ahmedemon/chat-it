@@ -10,4 +10,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('get-group-conversation', [AjaxController::class, 'getGroupConversation'])->name('get.group.conversation');
     Route::get('get-new-group-message', [AjaxController::class, 'getGroupNewMessage'])->name('get.new.group.message');
     Route::post('send-message', [ChattingController::class, 'sendMessage'])->name('send.message');
+    Route::post('update-profile/{id}', [ChattingController::class, 'updateImage'])->name('update.profile');
 });

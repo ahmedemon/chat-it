@@ -4,7 +4,14 @@
         <span class="ms-3">{{ Auth::guard('admin')->user()->name }}</span>
     </div>
     <div class="me-4">
-        <ul class="navbar-nav ms-auto flex-row">
+        <ul class="navbar-nav ms-auto flex-row align-items-center">
+            <li class="nav-item">
+                @if (Auth::guard('admin')->user()->sound == 1)
+                    <a class="btn btn-sm btn-outline-dark px-1 ms-1" href="{{ route('admin.sound.on.off') }}"><i class="fas fa-volume-up" style="font-size: 2.5vh;"></i></a>
+                @else
+                    <a class="btn btn-sm btn-outline-dark px-1 ms-1" href="{{ route('admin.sound.on.off') }}"><i class="fas fa-volume-mute" style="font-size: 2.5vh;"></i></a>
+                @endif
+            </li>
             <li class="nav-item dropdown">
                 <a id="navbarDropdown" class="btn btn-sm btn-outline-dark px-1 ms-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                     <i class="fas fa-chevron-circle-down" style="font-size: 2.5vh;"></i>
@@ -16,6 +23,14 @@
                     </a>
                     <a class="text-start ps-2 btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.profile.index') }}">
                         {{ __('Profile') }}
+                    </a>
+                    @php
+                        $conversation = \App\Models\Conversation::where('admin_id', Auth::guard('admin')->user()->id)
+                            ->where('is_group', 1)
+                            ->first();
+                    @endphp
+                    <a class="text-start ps-2 btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.view.group', $conversation->id) }}">
+                        {{ __('Group') }}
                     </a>
                     @if (Auth::guard('admin')->user()->main_account == 1)
                         <a class="text-start ps-2 btn btn-sm btn-block w-100 rounded-0" href="{{ route('admin.panel.index') }}">

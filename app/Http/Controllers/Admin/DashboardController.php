@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Helpers\FileManager;
 use App\Http\Controllers\Controller;
 use App\Mail\SendEmail;
+use App\Models\Admin;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
@@ -23,8 +24,16 @@ class DashboardController extends Controller
     public function viewConversation($id)
     {
         $conversation = Conversation::with(['messages', 'user'])->findOrFail($id);
-        $data = [$conversation->messages, $conversation->user];
+        $messages = Message::with(['user', 'conversation'])->where('conversation_id', $conversation->id)->get();
+        $data = [$messages, $conversation->user];
         return response()->json($data);
+    }
+
+    public function viewGroup($id)
+    {
+        $pageTitle = 'Dashboard';
+        $conversation = Conversation::findOrFail($id);
+        return view('admin.group', compact('pageTitle', 'conversation'));
     }
 
     public function sendMessage(Request $request, $id)
@@ -66,7 +75,7 @@ class DashboardController extends Controller
     public function getInboxes()
     {
         $id = Auth::guard('admin')->user()->id;
-        $data = Conversation::where('admin_id', $id)->with('messages')->orderBy('updated_at', 'desc')->get();
+        $data = Conversation::where('admin_id', $id)->with('messages')->orderBy('updated_at', 'desc')->where('is_group', 0)->get();
         return response()->json($data);
     }
 
@@ -89,5 +98,20 @@ class DashboardController extends Controller
         $user = User::where('id', $conversation->user_id)->first();
         Mail::to($user->email)->send(new SendEmail($user, $conversation, $message, $subject));
         return response()->json(['success' => true]);
+    }
+
+
+    public function sound()
+    {
+        $id = Auth::guard('admin')->user()->id;
+        $admin = Admin::findOrFail($id);
+        if ($admin->sound == 1) {
+            $admin->sound = 0;
+            $admin->save();
+        } else {
+            $admin->sound = 1;
+            $admin->save();
+        }
+        return redirect()->back();
     }
 }

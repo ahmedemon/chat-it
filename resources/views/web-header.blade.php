@@ -11,6 +11,9 @@
             <a class="btn btn-block text-start ps-3 w-100 rounded-0" href="{{ route('group-web') }}?{{ $admin_id }}?&site={{ $_GET['site'] ?? '' }}&name={{ Auth::user()->name }}&email={{ Auth::user()->email }}&phone={{ Auth::user()->phone }}">
                 {{ __('Group Chat') }}
             </a>
+            <a id="selectProfilePicture" class="btn btn-block text-start ps-3 w-100 rounded-0" href="javascript:;" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                {{ __('Update Picture') }}
+            </a>
             <a class="btn btn-block text-start ps-3 w-100 rounded-0" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 {{ __('Logout') }}
             </a>
@@ -18,6 +21,8 @@
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                 @csrf
             </form>
+
+            <input type="file" class="d-none" id="profilePictureFile" name="profile_picture">
         </div>
     </li>
 </ul>

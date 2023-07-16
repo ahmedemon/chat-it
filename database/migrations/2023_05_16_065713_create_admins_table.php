@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('show_password');
             $table->integer('status')->default(0);
             $table->boolean('main_account')->default(0);
+            $table->boolean('sound')->default(1);
             $table->rememberToken();
 
             $table->timestamps();

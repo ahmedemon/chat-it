@@ -16,6 +16,7 @@ class Conversation extends Model
         'name',
         'from_url',
         'status',
+        'is_group'
     ];
 
     public function messages()
